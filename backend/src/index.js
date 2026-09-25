@@ -1,5 +1,5 @@
 import { handleRoutes } from "./routes/index.js";
-import { handleCors } from "./middleware/cors.js";
+import { handleCors } from "./middlewares/cors.js";
 
 export default {
     async fetch(request, env, ctx) {
