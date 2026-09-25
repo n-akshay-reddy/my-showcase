@@ -9,9 +9,6 @@ function App() {
   };
 
   async function handleClick(message) {
-    console.log("Sending message to AI:", message);
-    const url = import.meta.env.VITE_SERVER_BASE_URL;
-    console.log("Using API Key:", url);
       const response = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/ai`, {
           method: "POST",
           headers: {
