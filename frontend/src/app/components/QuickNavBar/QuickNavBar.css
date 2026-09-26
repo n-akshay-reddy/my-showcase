@@ -20,35 +20,35 @@
 
     border: 1px solid var(--quick-nav-border);
 
-    box-shadow:
-        0 8px 30px var(--quick-nav-shadow),
-        inset 0 1px 0 var(--quick-nav-highlight);
+    box-shadow: 0 8px 30px var(--quick-nav-shadow);
 }
 
 
+/* Dark Theme */
 :root[data-theme="dark-mode"] .quick-nav-bar {
     --quick-nav-background: rgba(20, 20, 24, 0.08);
     --quick-nav-icon-background: #202020;
 
     --quick-nav-shadow: rgba(0, 0, 0, 0.25);
     --quick-nav-border: rgba(255, 255, 255, 0.08);
-    --quick-nav-highlight: rgba(255, 255, 255, 0.06);
 
     --quick-nav-tooltip-background: rgba(0, 0, 0, 0.85);
     --quick-nav-tooltip-text: #fff;
 }
 
+
+/* Light Theme */
 :root[data-theme="light-mode"] .quick-nav-bar {
     --quick-nav-background: rgba(255, 255, 255, 0.02);
     --quick-nav-icon-background: #1a1a1a;
 
-    --quick-nav-shadow: rgba(0, 0, 0, 0.06);
-    --quick-nav-border: rgba(0, 0, 0, 0.05);
-    --quick-nav-highlight: rgba(255, 255, 255, 0.20);
+    --quick-nav-shadow: rgba(0, 0, 0, 0.08);
+    --quick-nav-border: rgba(0, 0, 0, 0.06);
 
     --quick-nav-tooltip-background: rgba(0, 0, 0, 0.85);
     --quick-nav-tooltip-text: #fff;
 }
+
 
 .quick-nav-bar .icon {
     position: relative;
@@ -64,12 +64,16 @@
     height: 26px;
     padding: 8px;
     border-radius: 50%;
+
     background-color: var(--quick-nav-icon-background);
+
     transition:
         transform 0.15s ease,
         box-shadow 0.15s ease,
         filter 0.15s ease;
+
     will-change: transform;
+
     position: relative;
     z-index: 1;
 }
@@ -85,16 +89,23 @@
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
+
     margin-bottom: 2rem;
+
     background: var(--quick-nav-tooltip-background);
     color: var(--quick-nav-tooltip-text);
+
     padding: 0.3rem 0.5rem;
     border-radius: 10px;
+
     font-size: 0.9rem;
     white-space: nowrap;
+
     opacity: 0;
     pointer-events: none;
+
     transition: opacity 0.2s ease-in-out;
+
     z-index: 3;
 }
 
