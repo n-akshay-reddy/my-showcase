@@ -1,9 +1,9 @@
-:root[data-theme="dark"] {
+:root[data-theme="dark-mode"] {
     --background: #0f1117;
     --text: #ffffff;
 }
 
-:root[data-theme="light"] {
+:root[data-theme="light-mode"] {
     --background: #ffffff;
     --text: #111111;
 }

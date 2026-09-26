@@ -1,0 +1,21 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <defs>
+    <linearGradient id="resumeGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6cf"></stop>
+      <stop offset="100%" stop-color="#f0f"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer border -->
+  <rect x="10" y="10" width="44" height="44" rx="6" stroke="url(#resumeGradient)" stroke-width="1.1" fill="none"></rect>
+
+  <!-- Head -->
+  <circle cx="32" cy="22" r="5" fill="none" stroke="url(#resumeGradient)" stroke-width="1.1"></circle>
+
+  <!-- Shoulders/Chest (aligned properly) -->
+  <path d="M24 34c0-3 3.5-6 8-6s8 3 8 6v4H24v-4z" fill="none" stroke="url(#resumeGradient)" stroke-width="1.1"></path>
+
+  <!-- Resume text lines -->
+  <rect x="22" y="42" width="20" height="1.6" rx="0.8" fill="url(#resumeGradient)"></rect>
+  <rect x="22" y="46" width="20" height="1.6" rx="0.8" fill="url(#resumeGradient)"></rect>
+</svg>

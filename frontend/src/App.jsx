@@ -1,7 +1,8 @@
 import {useDispatch} from "react-redux";
 import {toggleTheme} from "./state-management/theme";
 
-import WavyCursor from './app/components/WavyCursor';
+import WavyCursor from './app/components/WavyCursor/WavyCursor';
+import  QuickNavBar from './app/components/QuickNavBar/QuickNavBar'
 
 function App() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function App() {
         <p>First version of my personal portfolio. More to come.</p>
         <button onClick={() => handleClick("Hello, AI!,can u change the theme")}>Send Message to AI</button>
       </div>
+      <QuickNavBar />
     </>
   );
 }
