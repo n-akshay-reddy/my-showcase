@@ -1,6 +1,8 @@
 import {useDispatch} from "react-redux";
 import {toggleTheme} from "./state-management/theme";
 
+import WavyCursor from './app/components/WavyCursor';
+
 function App() {
   const dispatch = useDispatch();
 
@@ -26,12 +28,14 @@ function App() {
   }
 
   return (
-    <div><button onClick={handleThemeToggle}>Toggle Theme</button>
-      <h1>My Showcase</h1>
-      <p>First version of my personal portfolio. More to come.</p>
-      <button onClick={() => handleClick("Hello, AI!,can u change the theme")}>Send Message to AI</button>
-    </div>
-    
+    <>
+      <WavyCursor />
+      <div><button onClick={handleThemeToggle}>Toggle Theme</button>
+        <h1>My Showcase</h1>
+        <p>First version of my personal portfolio. More to come.</p>
+        <button onClick={() => handleClick("Hello, AI!,can u change the theme")}>Send Message to AI</button>
+      </div>
+    </>
   );
 }
 
