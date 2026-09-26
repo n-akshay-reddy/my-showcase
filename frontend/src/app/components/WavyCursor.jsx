@@ -19,8 +19,7 @@ class ColorSineWave {
 
   update() {
     this.phase += this.frequency;
-    this.value =
-      this.offset + Math.sin(this.phase) * this.amplitude;
+    this.value = this.offset + Math.sin(this.phase) * this.amplitude;
 
     return this.value;
   }
@@ -29,13 +28,9 @@ class ColorSineWave {
 class WavyLine {
   constructor(spring, initialX, initialY) {
     this.spring = spring + 0.1 * Math.random() - 0.05;
-    this.friction =
-      ANIMATION_CONFIG.friction +
-      0.01 * Math.random() -
-      0.005;
+    this.friction = ANIMATION_CONFIG.friction + 0.01 * Math.random() - 0.005;
 
     this.nodes = [];
-
     for (let i = 0; i < ANIMATION_CONFIG.size; i++) {
       this.nodes.push({
         x: initialX,
@@ -48,12 +43,8 @@ class WavyLine {
 
   update(targetX, targetY) {
     const firstNode = this.nodes[0];
-
-    firstNode.vx +=
-      (targetX - firstNode.x) * this.spring;
-
-    firstNode.vy +=
-      (targetY - firstNode.y) * this.spring;
+    firstNode.vx += (targetX - firstNode.x) * this.spring;
+    firstNode.vy += (targetY - firstNode.y) * this.spring;
 
     let spring = this.spring;
 
@@ -62,18 +53,10 @@ class WavyLine {
 
       if (i > 0) {
         const prevNode = this.nodes[i - 1];
-
-        node.vx +=
-          (prevNode.x - node.x) * spring;
-
-        node.vy +=
-          (prevNode.y - node.y) * spring;
-
-        node.vx +=
-          prevNode.vx * ANIMATION_CONFIG.dampening;
-
-        node.vy +=
-          prevNode.vy * ANIMATION_CONFIG.dampening;
+        node.vx += (prevNode.x - node.x) * spring;
+        node.vy += (prevNode.y - node.y) * spring;
+        node.vx += prevNode.vx * ANIMATION_CONFIG.dampening;
+        node.vy += prevNode.vy * ANIMATION_CONFIG.dampening;
       }
 
       node.vx *= this.friction;
@@ -94,41 +77,19 @@ class WavyLine {
     ctx.beginPath();
     ctx.moveTo(firstNode.x, firstNode.y);
 
-    for (
-      let i = 1;
-      i < this.nodes.length - 2;
-      i++
-    ) {
+    for (let i = 1;i < this.nodes.length - 2;i++) {
       const node = this.nodes[i];
       const nextNode = this.nodes[i + 1];
-
-      const midX =
-        (node.x + nextNode.x) * 0.5;
-
-      const midY =
-        (node.y + nextNode.y) * 0.5;
-
-      ctx.quadraticCurveTo(
-        node.x,
-        node.y,
-        midX,
-        midY
-      );
+      const midX = (node.x + nextNode.x) * 0.5;
+      const midY = (node.y + nextNode.y) * 0.5;
+      ctx.quadraticCurveTo(node.x,node.y,midX,midY);
     }
 
-    const lastNode =
-      this.nodes[this.nodes.length - 2];
+    const lastNode = this.nodes[this.nodes.length - 2];
 
-    const finalNode =
-      this.nodes[this.nodes.length - 1];
+    const finalNode = this.nodes[this.nodes.length - 1];
 
-    ctx.quadraticCurveTo(
-      lastNode.x,
-      lastNode.y,
-      finalNode.x,
-      finalNode.y
-    );
-
+    ctx.quadraticCurveTo(lastNode.x,lastNode.y,finalNode.x,finalNode.y);
     ctx.stroke();
   }
 }
@@ -136,10 +97,7 @@ class WavyLine {
 const WavyCursor = () => {
   const canvasRef = useRef(null);
   const trailsRef = useRef([]);
-  const mousePosition = useRef({
-    x: 0,
-    y: 0,
-  });
+  const mousePosition = useRef({x: 0,y: 0,});
 
   const colorSineWave = useRef(null);
   const animationFrameId = useRef(null);
@@ -161,18 +119,9 @@ const WavyCursor = () => {
     resizeCanvas();
 
     const initLines = () => {
-      mousePosition.current = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-      };
-
+      mousePosition.current = {x: canvas.width / 2,y: canvas.height / 2};
       trailsRef.current = [];
-
-      for (
-        let i = 0;
-        i < ANIMATION_CONFIG.trails;
-        i++
-      ) {
+      for (let i = 0;i < ANIMATION_CONFIG.trails;i++) {
         trailsRef.current.push(
           new WavyLine(
             0.45 +
@@ -196,26 +145,13 @@ const WavyCursor = () => {
 
     const animate = () => {
       if (!colorSineWave.current) return;
-
-      ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
+      ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.globalCompositeOperation = 'lighter';
       ctx.lineWidth = 1;
 
-      const hue =
-        colorSineWave.current.update();
+      const hue =colorSineWave.current.update();
 
-      ctx.strokeStyle = `hsla(
-        ${Math.round(hue)},
-        90%,
-        50%,
-        0.25
-      )`;
+      ctx.strokeStyle = `hsla(${Math.round(hue)},90%,50%,0.25)`;
 
       trailsRef.current.forEach((line) => {
         line.update(
@@ -232,7 +168,7 @@ const WavyCursor = () => {
 
     animate();
 
-    const handleMouseMove = (e) => {
+    const handlePointerMove = (e) => {
       mousePosition.current = {
         x: e.clientX,
         y: e.clientY,
@@ -244,26 +180,12 @@ const WavyCursor = () => {
       initLines();
     };
 
-    window.addEventListener(
-      'mousemove',
-      handleMouseMove
-    );
-
-    window.addEventListener(
-      'resize',
-      handleResize
-    );
+    window.addEventListener('pointermove',handlePointerMove);
+    window.addEventListener('resize',handleResize);
 
     return () => {
-      window.removeEventListener(
-        'mousemove',
-        handleMouseMove
-      );
-
-      window.removeEventListener(
-        'resize',
-        handleResize
-      );
+      window.removeEventListener('pointermove',handlePointerMove);
+      window.removeEventListener('resize',handleResize);
 
       if (animationFrameId.current) {
         window.cancelAnimationFrame(
