@@ -168,7 +168,7 @@ const WavyCursor = () => {
 
     animate();
 
-    const handlePointerMove = (e) => {
+    const handleMouseMove = (e) => {
       mousePosition.current = {
         x: e.clientX,
         y: e.clientY,
@@ -180,11 +180,11 @@ const WavyCursor = () => {
       initLines();
     };
 
-    window.addEventListener('pointermove',handlePointerMove);
+    window.addEventListener('mousemove',handleMouseMove);
     window.addEventListener('resize',handleResize);
 
     return () => {
-      window.removeEventListener('pointermove',handlePointerMove);
+      window.removeEventListener('mousemove',handleMouseMove);
       window.removeEventListener('resize',handleResize);
 
       if (animationFrameId.current) {
