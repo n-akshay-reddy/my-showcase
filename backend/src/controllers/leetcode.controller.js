@@ -82,13 +82,13 @@ export async function getCalendar(username, searchParams, env) {
     }
 
     const parsedYear = Number(year);
-
-    if (!Number.isInteger(parsedYear) || parsedYear < 2000 || parsedYear > new Date().getFullYear()) {
+    const currentYear = new Date().getFullYear();
+    if (!Number.isInteger(parsedYear) || parsedYear < 2000 || parsedYear > currentYear) {
         return new Response(
             JSON.stringify({
                 success: false,
                 error: "InvalidYear",
-                message: "The 'year' query parameter must be a valid integer."
+                message: `The 'year' must be an integer between 2000 and ${currentYear}.`
             }),
             {
                 status: 400,
