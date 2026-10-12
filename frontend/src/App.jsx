@@ -1,42 +1,32 @@
-import {useDispatch} from "react-redux";
-import {toggleTheme} from "./state-management/theme";
+import { useCallback, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
-import WavyCursor from './app/components/WavyCursor/WavyCursor';
-import  QuickNavBar from './app/components/QuickNavBar/QuickNavBar'
+import WavyCursor from "./app/components/WavyCursor/WavyCursor";
+import QuickNavBar from "./app/components/QuickNavBar/QuickNavBar";
+import NavBar from "./app/components/NavBar/NavBar";
+// import Leetcode from "./pages/leetcode/LeetCode";
+import HomePage from "./pages/homePage/HomePage";
+import ComingSoon from "./pages/ComingSoon/ComingSoon";
 
 function App() {
-  const dispatch = useDispatch();
-
-  const handleThemeToggle = () => {
-    dispatch(toggleTheme());
-  };
-
-  async function handleClick(message) {
-      const response = await fetch(`${import.meta.env.VITE_SERVER_BASE_URL}/api/ai`, {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message })
-      });
-
-      if (!response.ok) {
-          throw new Error("Failed to send message");
-      }
-
-      const data = await response.json();
-      console.log("AI Response:", data);
-  }
+  const [introDone, setIntroDone] = useState(false);
+  const handleIntroDone = useCallback(() => setIntroDone(true), []);
 
   return (
     <>
       <WavyCursor />
-      <div><button onClick={handleThemeToggle}>Toggle Theme</button>
-        <h1>My Showcase</h1>
-        <p>First version of my personal portfolio. More to come.</p>
-        <button onClick={() => handleClick("Hello, AI!,can u change the theme")}>Send Message to AI</button>
-      </div>
-      <QuickNavBar />
+      <NavBar onIntroDone={handleIntroDone} />
+
+      {introDone && (
+        <div className="page-content">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            {/* <Route path="/leetcode" element={<Leetcode />} /> */}
+            <Route path="*" element={<ComingSoon />} />
+          </Routes>
+          <QuickNavBar />
+        </div>
+      )}
     </>
   );
 }

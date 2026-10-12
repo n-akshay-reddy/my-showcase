@@ -1,0 +1,172 @@
+.coming-soon {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 0px 24px 0px;
+    font-family: inherit;
+}
+
+.coming-soon *,
+.coming-soon *::before,
+.coming-soon *::after {
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.coming-soon__card {
+    width: min(100%, 720px);
+    min-width: 0;
+    padding: clamp(24px, 5vw, 56px);
+    border-radius: 24px;
+    text-align: center;
+}
+
+.coming-soon__icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 24px;
+    flex-shrink: 0;
+}
+
+.coming-soon__eyebrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 18px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+}
+
+.coming-soon__card h1 {
+    margin: 0;
+    font-size: clamp(30px, 4.5vw, 48px);
+    line-height: 1.2;
+    letter-spacing: -0.035em;
+    overflow-wrap: break-word;
+}
+
+.coming-soon__description {
+    width: min(100%, 480px);
+    margin: 18px auto 0;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.coming-soon__status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+    font-size: 12px;
+}
+
+.coming-soon__actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.coming-soon__button {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 10px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none;
+}
+
+.coming-soon__footer {
+    margin-top: 32px;
+    font-size: 9px;
+    line-height: 1.7;
+    letter-spacing: 0.12em;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .coming-soon {
+        min-height: 100svh;
+        padding: 10px 16px 0px;
+    }
+
+    .coming-soon__card {
+        width: 100%;
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+
+    .coming-soon__icon {
+        width: 54px;
+        height: 54px;
+        margin-bottom: 22px;
+        border-radius: 17px;
+    }
+
+    .coming-soon__eyebrow {
+        font-size: 9px;
+        letter-spacing: 0.09em;
+        margin-bottom: 16px;
+    }
+
+    .coming-soon__card h1 {
+        font-size: clamp(27px, 7.5vw, 34px);
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+    }
+
+    .coming-soon__description {
+        margin-top: 16px;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .coming-soon__status {
+        margin-top: 20px;
+        font-size: 11px;
+    }
+
+    .coming-soon__actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 26px;
+    }
+
+    .coming-soon__button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .coming-soon__footer {
+        margin-top: 28px;
+        font-size: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .coming-soon__card {
+        animation: none;
+    }
+
+    .coming-soon__button {
+        transition: none;
+    }
+}
