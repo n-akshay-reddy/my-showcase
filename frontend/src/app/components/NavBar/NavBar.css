@@ -1,7 +1,7 @@
 .nb {
   --nb-tint: color-mix(in srgb, currentColor 9%, transparent);
-  --nb-tint-strong: color-mix(in srgb, currentColor 14%, transparent);
-  --nb-border: color-mix(in srgb, currentColor 16%, transparent);
+  --nb-tint-strong: rgba(255, 255, 255, 0.95);
+  --nb-border: color-mix(in srgb, currentColor 16%, transparent); 
   --nb-grad: linear-gradient(90deg, #9333ea, #db2777);
   --nb-accent: #a855f7;
 
@@ -12,6 +12,10 @@
   z-index: 1500;
   color: var(--text-color, inherit);
   font-family: var(--font-nav, "Inter", "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+
+:root[data-theme="dark-mode"] .nb {
+  --nb-tint-strong: rgba(30, 30, 38, 0.95);
 }
 
 .nb a,
