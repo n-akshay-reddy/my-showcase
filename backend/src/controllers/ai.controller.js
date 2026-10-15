@@ -56,13 +56,39 @@ export async function handleAIRequest(request, env, ctx) {
         );
 
     } catch (error) {
-        console.error("Sreevi AI request failed:", error);
+        const status = Number(error?.status ?? error?.statusCode);
+
+        console.error("Sreevi AI request failed:", {
+            name: error?.name,
+            status,
+            message: error?.message,
+        });
+
+        let errorCode = "AIServiceError";
+        let userMessage = "Sreevi couldn't complete your request. Please try again.";
+
+        if (status === 400) {
+            errorCode = "InvalidAIRequest";
+            userMessage = "Sreevi couldn't process that request. Please try rephrasing it.";
+        } else if (status === 401 || status === 403) {
+            errorCode = "AIAuthenticationError";
+            userMessage = "Sreevi is temporarily unable to access its AI service.";
+        } else if (status === 404) {
+            errorCode = "AIModelUnavailable";
+            userMessage = "Sreevi's AI model is unavailable. Please try again later.";
+        } else if (status === 429) {
+            errorCode = "AIRateLimitExceeded";
+            userMessage = "Sreevi is receiving too many requests right now. Please wait a moment and try again.";
+        } else if (status >= 500 && status <= 599) {
+            errorCode = "AIProviderUnavailable";
+            userMessage = "Sreevi's AI service is temporarily unavailable. Please try again shortly.";
+        }
 
         return new Response(
             JSON.stringify({
                 success: false,
-                error: "AIServiceUnavailable",
-                message: "Unable to process your request right now."
+                error: errorCode,
+                message: userMessage
             }),
             {
                 status: 500,
