@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Sparkles } from "lucide-react";
 
 import SreeviRobot from "../SreeviRobot/SreeviRobot";
-import SreeviChat from "../Sreevichat/Sreevichat"; // must match your real folder + file name exactly
+import SreeviChat from "../SreeviChat/SreeviChat"; 
 import {
   openChat,
   selectSreevi,
