@@ -1,0 +1,326 @@
+/* ---------- tweakable from outside ---------- */
+.sreevi {
+  --sreevi-size: 92px;
+  --sreevi-right: 28px;
+  --sreevi-bottom: 26px;
+  --sreevi-z: 1000;
+  --sreevi-accent: #a78bfa;
+  --sreevi-accent-strong: #8b5cf6;
+
+  position: fixed;
+  right: var(--sreevi-right);
+  bottom: var(--sreevi-bottom);
+  z-index: var(--sreevi-z);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  visibility: visible;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1),
+    visibility 0s;
+}
+
+/* hidden while the chat is open (kept mounted so the SVG gradients stay valid) */
+.sreevi.is-hidden {
+  opacity: 0;
+  transform: translateY(24px) scale(0.8);
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.25s ease, transform 0.3s ease, visibility 0s 0.3s;
+}
+
+/* ---------- speech bubble ---------- */
+.sreevi__bubble {
+  position: relative;
+  background: #fff;
+  color: #1b1535;
+  padding: 9px 14px;
+  border-radius: 14px;
+  font: 600 13px/1.3 Inter, system-ui, sans-serif;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateY(6px) scale(0.96);
+  transform-origin: bottom right;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.sreevi__bubble strong {
+  display: block;
+  font-weight: 700;
+}
+.sreevi__bubble small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #6d6887;
+}
+.sreevi__bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: calc(var(--sreevi-size) / 2 - 7px);
+  border: 7px solid transparent;
+  border-top-color: #fff;
+  border-bottom: 0;
+}
+
+.sreevi:hover .sreevi__bubble,
+.sreevi:focus-within .sreevi__bubble,
+.sreevi.is-pinned .sreevi__bubble,
+.sreevi.is-greeting .sreevi__bubble {
+  opacity: 1;
+  transform: none;
+}
+
+.sreevi__dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.sreevi__dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--sreevi-accent-strong);
+  animation: sreevi-dots 1s infinite;
+}
+.sreevi__dots i:nth-child(2) { animation-delay: 0.15s; }
+.sreevi__dots i:nth-child(3) { animation-delay: 0.3s; }
+
+/* ---------- the button ---------- */
+.sreevi__btn {
+  position: relative;
+  width: var(--sreevi-size);
+  height: calc(var(--sreevi-size) * 1.1);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.sreevi__btn:focus-visible {
+  outline: 3px solid #c084fc;
+  outline-offset: 6px;
+  border-radius: 50%;
+}
+
+.sreevi__float {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: sreevi-bob 3.4s ease-in-out infinite;
+}
+
+.sreevi__tilt {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --scale: 1;
+  transform: perspective(420px) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--scale));
+  transition: transform 0.15s ease-out, filter 0.35s ease;
+  filter: drop-shadow(0 10px 14px rgba(109, 40, 217, 0.35));
+  will-change: transform;
+}
+.sreevi__btn:hover .sreevi__tilt,
+.sreevi__btn:focus-visible .sreevi__tilt {
+  --scale: 1.08;
+  filter: drop-shadow(0 0 16px rgba(196, 181, 253, 0.85))
+    drop-shadow(0 12px 18px rgba(109, 40, 217, 0.5)) brightness(1.06);
+}
+
+/* ---------- hover lighting: spotlight cone + floor glow ---------- */
+.sreevi__spot {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 190px;
+  height: 300px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(196, 181, 253, 0.6) 0%,
+    rgba(139, 92, 246, 0.22) 55%,
+    rgba(139, 92, 246, 0) 100%
+  );
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+  filter: blur(1.5px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.sreevi__floor {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 120px;
+  height: 22px;
+  transform: translateX(-50%) scale(0.7);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(139, 92, 246, 0.55), transparent);
+  opacity: 0.8;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
+.sreevi__floor::after {
+  content: "";
+  position: absolute;
+  inset: 3px 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 181, 253, 0);
+  transition: border-color 0.4s ease;
+}
+
+.sreevi__btn:hover .sreevi__spot,
+.sreevi__btn:focus-visible .sreevi__spot {
+  opacity: 1;
+}
+.sreevi__btn:hover .sreevi__floor,
+.sreevi__btn:focus-visible .sreevi__floor {
+  transform: translateX(-50%) scale(1.25);
+  opacity: 1;
+  background: radial-gradient(closest-side, rgba(196, 181, 253, 0.85), transparent);
+}
+.sreevi__btn:hover .sreevi__floor::after,
+.sreevi__btn:focus-visible .sreevi__floor::after {
+  border-color: rgba(196, 181, 253, 0.7);
+}
+
+/* ---------- sparkles ---------- */
+.sreevi__sp {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #c4b5fd;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.sreevi__sp--1 { left: -8px; top: 14px; animation: sreevi-tw 2.6s ease-in-out infinite; }
+.sreevi__sp--2 { right: -10px; top: 30px; width: 10px; height: 10px; background: #f0abfc; animation: sreevi-tw 2.6s ease-in-out -1s infinite; }
+.sreevi__sp--3 { right: 6px; bottom: 6px; width: 9px; height: 9px; background: #fde68a; animation: sreevi-tw 2.6s ease-in-out -1.8s infinite; }
+
+.sreevi__btn:hover .sreevi__sp,
+.sreevi__btn:focus-visible .sreevi__sp,
+.sreevi[data-status="result"] .sreevi__sp {
+  opacity: 1;
+}
+
+/* ---------- state: working ---------- */
+.sreevi__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--sreevi-size) + 18px);
+  height: calc(var(--sreevi-size) + 18px);
+  margin: calc((var(--sreevi-size) + 18px) / -2) 0 0 calc((var(--sreevi-size) + 18px) / -2);
+  border-radius: 50%;
+  border: 2px dashed #c084fc;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.sreevi[data-status="working"] .sreevi__ring {
+  opacity: 1;
+  animation: sreevi-spin 5s linear infinite;
+}
+
+/* ---------- state: result ---------- */
+.sreevi[data-status="result"] .sreevi__float {
+  animation: sreevi-hop 1.6s ease-in-out infinite;
+}
+
+.sreevi__badge {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #fb923c, #ec4899 52%, #8b5cf6);
+  color: #fff;
+  font: 700 12px/1 Inter, system-ui, sans-serif;
+  border: 2px solid #17122b;
+  animation: sreevi-badge-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+/* ---------- keyframes ---------- */
+@keyframes sreevi-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes sreevi-hop {
+  0%, 100% { transform: translateY(0); }
+  15% { transform: translateY(-14px); }
+  30% { transform: translateY(0); }
+  42% { transform: translateY(-6px); }
+  54% { transform: translateY(0); }
+}
+@keyframes sreevi-tw {
+  0%, 100% { transform: scale(1) rotate(0); }
+  50% { transform: scale(0.5) rotate(40deg); }
+}
+@keyframes sreevi-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes sreevi-dots {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-3px); opacity: 1; }
+}
+@keyframes sreevi-badge-in {
+  from { transform: scale(0); }
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 600px) {
+  .sreevi {
+    --sreevi-size: 72px;
+    --sreevi-right: 14px;
+    --sreevi-bottom: 14px;
+  }
+  .sreevi__spot { width: 150px; height: 220px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sreevi,
+  .sreevi * {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- status pill under the robot (working / result ready) ---------- */
+.sreevi__pill {
+  align-self: flex-end;
+  margin: -4px calc(var(--sreevi-size) / 2) 0 0;
+  transform: translateX(50%); /* centre under the robot */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(23, 18, 43, 0.94);
+  color: #fff;
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(139, 92, 246, 0.14);
+  font: 600 12px/1 Inter, system-ui, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: sreevi-pill-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+.sreevi__pill svg { color: #c4b5fd; }
+.sreevi__pill[data-status="result"] { border-color: rgba(244, 114, 182, 0.6); }
+.sreevi__pill[data-status="result"] svg { color: #f9a8d4; }
+.sreevi__pill .sreevi__dots i { background: #c4b5fd; }
+
+@keyframes sreevi-pill-in {
+  from { opacity: 0; scale: 0.85; }
+}

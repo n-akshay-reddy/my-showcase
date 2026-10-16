@@ -1,0 +1,58 @@
+.sreevi-robot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sreevi-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sreevi-blink 4.5s infinite;
+}
+
+/* eyes follow the cursor (--ex / --ey are set from the launcher) */
+.sreevi-eyes {
+  transform: translate(var(--ex, 0px), var(--ey, 0px));
+  transition: transform 0.12s ease-out;
+}
+.sreevi-robot--working .sreevi-eyes {
+  transform: none;
+}
+
+.sreevi-led {
+  animation: sreevi-ping 1.6s ease-in-out infinite;
+}
+
+/* working: eyes scan left/right, LEDs pulse faster */
+.sreevi-robot--working .sreevi-eye {
+  animation: sreevi-scan 0.9s ease-in-out infinite;
+}
+.sreevi-robot--working .sreevi-led {
+  animation-duration: 0.7s;
+}
+
+/* result: LEDs pulse faster */
+.sreevi-robot--result .sreevi-led {
+  animation-duration: 0.9s;
+}
+
+@keyframes sreevi-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.08); }
+}
+@keyframes sreevi-scan {
+  0%, 100% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+}
+@keyframes sreevi-ping {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sreevi-eye,
+  .sreevi-led {
+    animation: none !important;
+  }
+}

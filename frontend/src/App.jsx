@@ -7,6 +7,7 @@ import NavBar from "./app/components/NavBar/NavBar";
 // import Leetcode from "./pages/leetcode/LeetCode";
 import HomePage from "./pages/homePage/HomePage";
 import ComingSoon from "./pages/ComingSoon/ComingSoon";
+import SreeviLauncher from "./app/components/SreeviLauncher/SreeviLauncher";
 
 function App() {
   const [introDone, setIntroDone] = useState(false);
@@ -27,6 +28,7 @@ function App() {
           <QuickNavBar />
         </div>
       )}
+      {introDone && <SreeviLauncher />}
     </>
   );
 }

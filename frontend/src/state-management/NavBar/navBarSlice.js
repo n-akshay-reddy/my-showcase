@@ -1,40 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [
-  { label: "Home", to: "/" },
-  { label: "<Leetcode/>", to: "/leetcode" },
-  {
-    label: "About",
-    paths: ["/about"],
-    children: [
-      { to: "/about/education", label: "Education" },
-      { to: "/about/skills", label: "Skills" },
-    ],
-  },
-  {
-    label: "Showcase",
-    paths: ["/showcase"],
-    children: [
-      { to: "/showcase/projects", label: "Projects" },
-      { to: "/showcase/work", label: "Work" },
-      { to: "/showcase/achievements", label: "Achievements" },
-    ],
-  },
-  {
-    label: "More",
-    paths: ["/more"],
-    children: [
-      { to: "/more/interests", label: "Interests" },
-      { to: "/more/hobbies", label: "Hobbies" },
-      { to: "/more/contact", label: "Contact" },
-    ],
-  },
+    { id: "home", label: "Home", to: "/" },
+    { id: "leetcode", label: "<Leetcode/>", to: "/leetcode" },
+    {
+        label: "About",
+        paths: ["/about"],
+        children: [
+            { id: "experience", to: "/about/Experience", label: "Experience" },
+            { id: "education", to: "/about/education", label: "Education" },
+            { id: "skills", to: "/about/skills", label: "Skills" },
+        ],
+    },
+    {
+        label: "Showcase",
+        paths: ["/showcase"],
+        children: [
+            { id: "projects", to: "/showcase/projects", label: "Projects" },
+            { id: "achievements", to: "/showcase/achievements", label: "Achievements" },
+        ],
+    },
+    { id: "contact", label: "Contact", to: "/contact" },
+    {
+        label: "More",
+        paths: ["/more"],
+        children: [
+            { id: "interests", to: "/more/interests", label: "Interests" },
+            { id: "hobbies", to: "/more/hobbies", label: "Hobbies" },
+        ],
+    },
 ];
 
 const navBarSlice = createSlice({
     name: "navBar",
     initialState,
     reducers: {},
-})  
+})
 
 export default navBarSlice.reducer;
