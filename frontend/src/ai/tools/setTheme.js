@@ -1,7 +1,7 @@
 import { store } from "../../state-management/store/store";
-import { setTheme } from "../../state-management/theme/themeSlice";
+import { setTheme, toggleTheme } from "../../state-management/theme/themeSlice";
 
-const ALLOWED = ["dark-mode", "light-mode"];
+const ALLOWED = ["dark-mode", "light-mode", "toggle"];
 
 export const setThemeTool = {
     execute(args) {
@@ -9,8 +9,14 @@ export const setThemeTool = {
             return { ok: false, message: "That theme isn't supported." };
         }
 
-        const label = args.theme.replace("-", " ");        
-        const current = store.getState().theme.mode;  
+        if (args.theme === "toggle") {
+            store.dispatch(toggleTheme());
+            const label = store.getState().theme.mode.replace("-", " ");
+            return { ok: true, changed: true, message: `Switched to ${label}.` };
+        }
+
+        const label = args.theme.replace("-", " ");
+        const current = store.getState().theme.mode;
 
         if (current === args.theme) {
             return { ok: true, changed: false, message: `The site is already in ${label}.` };

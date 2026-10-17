@@ -2,12 +2,15 @@ export const setTheme = {
     name: "setTheme",
     topic: "theme",
     runsOn: "frontend",
-    description: "Set the portfolio theme. For requests like 'toggle' or 'switch the theme', pick the opposite of context.currentTheme.",
+    description:
+        "Change the portfolio theme. Use 'dark-mode' or 'light-mode' when the user names a theme " +
+        "Use 'toggle' when the user asks to change, switch " +
+        "or toggle the theme without naming one.",
     args: {
-        theme: { 
+        theme: {
             type: "string",
-            values: ["dark-mode", "light-mode"],
-            required: true 
+            values: ["dark-mode", "light-mode", "toggle"],
+            required: true
         }
-    } 
+    }
 };
