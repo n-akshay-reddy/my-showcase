@@ -1,7 +1,7 @@
 import { TOOLS } from "./tools/index.js";
 
 export const DECISION_TYPES = ["answer", "clarify", "execute", "decline"];
-export const TOPICS = ["leetcode", "theme", "navigation", "portfolio", "general"];
+export const TOPICS = ["leetcode", "theme", "navigation", "portfolio", "general","contact"];
 
 const MAX_MESSAGE_LENGTH = 1000;
 

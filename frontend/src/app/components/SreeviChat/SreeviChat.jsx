@@ -70,9 +70,15 @@ function SreeviChat() {
     const panelRef = useRef(null);
     const listRef = useRef(null);
     const inputRef = useRef(null);
+    const pendingRef = useRef(null); // timer for a delayed action (open link, navigate)
 
     const busy = typing || status === SREEVI_STATUS.WORKING;
     const canSend = draft.trim() && !busy;
+
+    const cancelPending = () => clearTimeout(pendingRef.current);
+
+    // Don't fire a delayed action after the chat unmounts
+    useEffect(() => () => clearTimeout(pendingRef.current), []);
 
     // A closed panel must not keep focus: `inert` handles that, `aria-hidden` doesn't.
     useEffect(() => {
@@ -85,6 +91,7 @@ function SreeviChat() {
     };
 
     const endChat = () => {
+        cancelPending();
         setMessages([]);
         setDraft("");
         minimize();
@@ -121,12 +128,14 @@ function SreeviChat() {
         el.style.height = `${Math.min(el.scrollHeight, 110)}px`;
     }, [draft]);
 
-    const push = (role, text, error) =>
-        setMessages((m) => [...m, { id: crypto.randomUUID(), role, text, error }]);
+    const push = (role, text, error, link = null) =>
+        setMessages((m) => [...m, { id: crypto.randomUUID(), role, text, error, link }]);
 
     const send = async (text) => {
         const value = text.trim();
         if (!value || busy) return;
+
+        cancelPending(); // a new message cancels any action still counting down
 
         push("user", value);
         setDraft("");
@@ -137,17 +146,26 @@ function SreeviChat() {
             const decision = await sendSreeviMessage(value);
             let reply = toText(decision);
             let failed = false;
+            let link = null;
+
             if (decision?.type === "execute" && decision.tool?.runsOn === "frontend") {
                 const result = executeFrontendTool(decision.tool, { navigate });
 
-                // Failure or "already done": show the real result instead of Gemini's line
-                if (!result.ok || result.changed === false) {
+                // Failure, "already done", or a delayed action: show the tool's own message
+                if (!result.ok || result.changed === false || result.after) {
                     reply = result.message;
                     failed = !result.ok;
                 }
+
+                link = result.link ?? null;
+
+                // Delayed action: tell the user first, run it after the delay
+                if (result.ok && result.after) {
+                    pendingRef.current = setTimeout(result.after, result.delayMs ?? 5000);
+                }
             }
 
-            push("agent", reply,failed);
+            push("agent", reply, failed, link);
             // Chat open -> back to idle. Minimized -> "Result ready" + badge + preview.
             dispatch(messageReceived(reply.length > 48 ? `${reply.slice(0, 48)}…` : reply));
         } catch (error) {
@@ -238,6 +256,17 @@ function SreeviChat() {
                         <div key={m.id} className={`sv-msg sv-msg--${m.role}`}>
                             <div className={`sv-msg__bubble ${m.error ? "is-error" : ""}`}>
                                 <p>{m.text}</p>
+                                {m.link && (
+                                    <a
+                                        className="sv-msg__link"
+                                        href={m.link.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={cancelPending}
+                                    >
+                                        {m.link.label}
+                                    </a>
+                                )}
                             </div>
                         </div>
                     ))}

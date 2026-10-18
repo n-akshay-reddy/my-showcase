@@ -285,3 +285,16 @@
   .sv-chat__body,
   .sv-chat .sv-chat__composer textarea { scrollbar-width: thin; scrollbar-color: var(--sv-surface-2) transparent; }
 }
+
+.sv-msg__link {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, #7c5cff, #d946ef);
+}
+.sv-msg__link:hover { filter: brightness(1.1); }

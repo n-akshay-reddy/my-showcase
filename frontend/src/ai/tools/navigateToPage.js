@@ -23,7 +23,12 @@ export const navigateToPageTool = {
             return { ok: true, changed: false, message: `You're already on the ${args.page} page.` };
         }
 
-        navigate(path);
-        return { ok: true, changed: true, message: `Opened the ${args.page} page.` };
+        return {
+            ok: true,
+            changed: true,
+            message: `Taking you to ${args.page} in ${import.meta.env.VITE_INTERNAL_NAVIGATION_DELAY_MS/1000} seconds.`,
+            delayMs: import.meta.env.VITE_INTERNAL_NAVIGATION_DELAY_MS,
+            after: () => navigate(path),
+        };
     }
 };
