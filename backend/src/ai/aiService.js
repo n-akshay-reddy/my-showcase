@@ -8,8 +8,9 @@ export async function generateResponse({ prompt, systemInstruction, apiKey, mode
         contents: prompt,
         config: {
             systemInstruction,
-            responseMimeType: "application/json"
-        }
+            responseMimeType: "application/json",
+            //abortSignal: signal,
+        },
     });
 
     return response.text;

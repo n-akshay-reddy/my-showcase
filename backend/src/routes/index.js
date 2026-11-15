@@ -1,5 +1,6 @@
 import { aiRoutes } from "./ai.routes.js";
 import { leetcodeRoutes } from "./leetcode.routes.js";
+import { profileRoutes } from "./profile.routes.js";
 
 export async function handleRoutes(request, env, ctx) {
 
@@ -11,6 +12,10 @@ export async function handleRoutes(request, env, ctx) {
 
     if (url.pathname.startsWith("/api/leetcode")) {
         return leetcodeRoutes(request, env, ctx);
+    }
+
+    if (url.pathname.startsWith("/api/profile")){
+        return profileRoutes(request, env, ctx);
     }
     
     return new Response(

@@ -1,0 +1,67 @@
+{
+    "id": "oss-apex-xlsx",
+    "name": "Lightweight XLSX Utility for Apex",
+    "type": "Open-source contribution",
+    "role": "Contributor",
+    "summary": "Bridged the gap between low-level XLSX parsing structures and high-level Apex business logic by introducing a developer-friendly API that organizes spreadsheet data by sheet name and rows. This allows developers to work with structured Excel data directly, without manually navigating complex low-level data structures.",
+    "maintainer": "jfwberg",
+    "technologies": [
+        "Salesforce Apex",
+        "XLSX Parsing",
+        "XML Parsing",
+        "Data Structures"
+    ],
+    
+"problem": "The existing low-level APIs required developers to handle complex data structures and parsing logic, making XLSX data less developer-friendly and harder to integrate into high-level Apex business logic.",
+    "contribution": "Implemented Parse.toSheetMap(), which converts parsed XLSX worksheet contents into a Map<String, List<List<Object>>> structure keyed by worksheet name, with each worksheet represented as rows containing column values. The implementation converts Excel cell references into row and column indexes, handles shared strings, and constructs row-major worksheet data.",
+    "improvements": [
+        "Sheet-name-based worksheet access",
+        "Row-major two-dimensional list representation",
+        "Excel cell-reference conversion into numeric indexes",
+        "Structured worksheet data with values placed according to row and column positions",
+        "Optional parsing of selected worksheets"
+    ],
+    "purpose": "Provide an intuitive, developer-friendly API for consuming XLSX data in Salesforce Apex without requiring callers to transform lower-level parsing structures themselves.",
+    "impact": "Introduced a merged parsing API that makes XLSX worksheet data easier to navigate and consume in Apex business logic, reducing the need for callers to work directly with lower-level spreadsheet structures.",
+    "commitMessage": "Add global sheet map methods to parse XLSX sheet data into a structured format",
+    "commitUrl": "https://github.com/jfwberg/lightweight-xlsx-util/commit/f331e97706a0ec8506ed352742bbc341147646ab",
+    "mergeCommitMessage": "Merge pull request #7 from n-akshay-reddy/main",
+    "mergeCommitUrl": "https://github.com/jfwberg/lightweight-xlsx-util/commit/45dbcbda2d3bd764e0efb5060a90e2b0ff9ad0a5",
+    "pullRequestUrl": "https://github.com/jfwberg/lightweight-xlsx-util/pull/7",
+    "pullRequestTitle": "Add toSheetMap() API for sheet-name based, row-major XLSX parsing",
+    "pullRequestNumber": 7,
+    "submittedAt": "2025-12-31",
+    "mergedAt": "2026-01-12",
+    "reviewComments": [
+        {
+            "author": "jfwberg",
+            "date": "2026-01-05",
+            "type": "maintainer-feedback",
+            "comment": "Thanks for your contribution. I will have a deep dive into your detailed solution.",
+            "url": "https://github.com/jfwberg/lightweight-xlsx-util/pull/7"
+        },
+        {
+            "author": "jfwberg",
+            "date": "2026-01-12",
+            "type": "maintainer-feedback",
+            "comment": "The method was clear and well documented. The maintainer planned to include six method signatures covering DOM-document and inverted options, with testing and test classes, and potentially align the work with the Spring release.",
+            "url": "https://github.com/jfwberg/lightweight-xlsx-util/pull/7"
+        }
+    ],
+    "authorResponses": [
+        {
+            "author": "n-akshay-reddy",
+            "date": "2025-12-31",
+            "summary": "Documented the API design, explained the limitations of existing parsing structures, and described the developer benefits of sheet-name-based, row-major output.",
+            "url": "https://github.com/jfwberg/lightweight-xlsx-util/pull/7"
+        },
+        {
+            "author": "n-akshay-reddy",
+            "date": "2026-01-12",
+            "summary": "Thanked the maintainer for reviewing the contribution and offered to clarify design decisions, performance considerations, and edge cases.",
+            "url": "https://github.com/jfwberg/lightweight-xlsx-util/pull/7"
+        }
+    ],
+    "status": "Merged",
+    "repositoryUrl": "https://github.com/jfwberg/lightweight-xlsx-util"
+}

@@ -1,0 +1,39 @@
+[
+    {
+        "id": "edu-btech",
+        "level": "Undergraduate",
+        "degree": "Bachelor of Engineering",
+        "field": "Computer Science and Engineering",
+        "institution": "CMR Engineering College",
+        "location": "Hyderabad, Telangana, India",
+        "startYear": 2021,
+        "endYear": 2025,
+        "status": "Completed",
+        "grade": { "type": "CGPA", "value": 8.18, "scale": 10 }
+    },
+    {
+        "id": "edu-intermediate",
+        "level": "Intermediate",
+        "degree": "Intermediate (MPC)",
+        "field": "Mathematics, Physics, Chemistry",
+        "board": "TSBIE",
+        "institution": "Urbane Junior College",
+        "location": "Hyderabad, Telangana, India",
+        "startYear": 2019,
+        "endYear": 2021,
+        "status": "Completed",
+        "grade": { "type": "Percentage", "value": 91.2 }
+    },
+    {
+        "id": "edu-school",
+        "level": "Schooling",
+        "degree": "High School",
+        "board": "CBSE",
+        "institution": "Kendriya Vidyalaya No. 2, Uppal",
+        "location": "Hyderabad, Telangana, India",
+        "startYear": 2009,
+        "endYear": 2019,
+        "status": "Completed",
+        "grade": { "type": "Percentage", "value": 84.83 }
+    }
+]

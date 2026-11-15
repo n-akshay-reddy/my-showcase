@@ -1,4 +1,4 @@
-import { runAgent } from "../agent/ai.agent";
+import { runAgent } from "../../agent/ai.agent";
 
 export async function handleAIRequest(request, env, ctx) {
     try {

@@ -1,0 +1,102 @@
+{
+	"name": "Akshay Kumar Reddy Nanobolu",
+	"knownAs": "Akshay",
+	"headline": "Software engineer building enterprise Salesforce products, full-stack apps and AI agents",
+	"summary": "I'm a product-oriented software engineer who works across enterprise Salesforce engineering, full-stack development and applied AI. I enjoy tracing hard problems to their root cause, optimizing resource-heavy systems and turning complex logic into reusable, maintainable code.",
+	"roles": [
+		"Salesforce product developer",
+		"Full-stack developer",
+		"AI application and agent developer"
+	],
+	"careerDirection": "I want to grow into an engineer who designs architectures, solves hard technical constraints and brings AI into practical software products.",
+	"strengths": [
+		"Problem Solving",
+		"Debugging",
+		"Critical Thinking",
+		"Ownership",
+		"Quick Learner",
+		"Self-Motivated",
+		"Adaptability",
+		"Time Management",
+		"Team Collaboration",
+		"Team Management",
+		"Active Participation"
+	],
+	"engineering principles": [
+		{
+			"title": "Research before building",
+			"summary": "I understand how a system really behaves before choosing a solution."
+		},
+		{
+			"title": "Fix the root cause",
+			"summary": "I investigate the underlying cause of a problem and implement solutions that prevent it from recurring."
+		},
+		{
+			"title": "Design for reuse",
+			"summary": "I prefer clear abstractions that other developers can use without knowing the internals."
+		},
+		{
+			"title": "Respect resources",
+			"summary": "I watch memory, queries and processing cost, and ask whether a workload belongs inside a constrained environment."
+		},
+		{
+			"title": "Protect existing behavior",
+			"summary": "I consider backward compatibility and regression risk whenever shared code changes."
+		},
+		{
+			"title": "Security by design",
+			"summary": "I consider security from the beginning, ensuring that data access, permissions and system boundaries are protected by design."
+		}
+	],
+	"values": [
+		{
+			"id": 1,
+			"choose": "Consistency",
+			"over": "motivation",
+			"tagline": "Show up. Every single day.",
+			"description": "A 160-day LeetCode streak wasn't built on motivation. It was built on a habit that works even on the days I'd rather skip."
+		},
+		{
+			"id": 2,
+			"choose": "Progress",
+			"over": "complacency",
+			"tagline": "Never stop becoming better.",
+			"description": "I believe there is always room to grow. I continuously challenge myself, learn from every experience and refine my skills to become better at what I do."
+		},
+		{
+			"id": 3,
+			"choose": "Ownership & Accountability",
+			"over": "excuses",
+			"tagline": "If it's mine, it's on me.",
+			"description": "I take responsibility for my decisions, my work and the outcomes that follow. When something goes wrong, I focus on understanding it, addressing it and making things better."
+		},
+		{
+			"id": 4,
+			"choose": "Resilience Through Challenges",
+			"over": "giving up",
+			"tagline": "Hard is part of the journey.",
+			"description": "Difficult problems and unexpected setbacks are part of growth. I stay composed, break challenges into smaller pieces and keep working towards a solution."
+		},
+		{
+			"id": 5,
+			"choose": "Learning From Failures",
+			"over": "regret",
+			"tagline": "Every setback has something to teach.",
+			"description": "A failed submission, a broken build or an unsuccessful attempt is an opportunity to understand what went wrong, learn from it and approach the next attempt wiser."
+		},
+		{
+			"id": 6,
+			"choose": "Teamwork & Collaboration",
+			"over": "working in isolation",
+			"tagline": "We build better together.",
+			"description": "I value different perspectives, open communication and shared knowledge. Great solutions often emerge when people bring their strengths together."
+		},
+		{
+			"id": 7,
+			"choose": "Intellectual Curiosity",
+			"over": "assumptions",
+			"tagline": "Question. Explore. Understand.",
+			"description": "I don't like accepting things at face value. I enjoy understanding how things work, questioning assumptions and exploring ideas beyond what I already know."
+		}
+	]
+}

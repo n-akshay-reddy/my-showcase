@@ -1,4 +1,4 @@
-import { GET_USER_FULL_PROFILE,GET_USER_CALENDAR } from "../queries/leetcode/graphql/users.queries";
+import { GET_USER_FULL_PROFILE,GET_USER_CALENDAR } from "../../queries/leetcode/graphql/users.queries";
 
 
 export async function getProfile(username, searchParams, env) {

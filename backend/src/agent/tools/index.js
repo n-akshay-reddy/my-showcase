@@ -11,5 +11,10 @@ export const TOOLS = Object.fromEntries(ALL_TOOLS.map((tool) => [tool.name, tool
 
 // For AI purpose
 export function describeToolsForPrompt() {
-    return ALL_TOOLS.map((tool) =>`- ${tool.name}: ${tool.description} Args: ${JSON.stringify(tool.args)}`).join("\n");
+    return ALL_TOOLS.map((tool) => {
+        const flag = tool.terminal
+            ? " [Terminal: opens a page or tab. At most one per request, and it goes last.]"
+            : "";
+        return `- ${tool.name}:${flag} ${tool.description} Args: ${JSON.stringify(tool.args)}`;
+    }).join("\n");
 }

@@ -1,4 +1,4 @@
-import { getProfile,getCalendar } from "../controllers/leetcode.controller";
+import { getProfile,getCalendar } from "../controllers/leetcode/leetcode.controller";
 
 export async function leetcodeRoutes(request, env, ctx) {
     const url = new URL(request.url);

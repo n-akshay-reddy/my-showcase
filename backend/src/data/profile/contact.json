@@ -1,0 +1,31 @@
+{
+  "location": {
+    "city": "Hyderabad",
+    "state": "Telangana",
+    "country": "India",
+    "display": "Hyderabad, Telangana, India"
+  },
+  "email": "akshaynanobolu@gmail.com",
+  "profiles": [
+    {
+      "name": "LinkedIn",
+      "href": "https://www.linkedin.com/in/n-akshay-reddy"
+    },
+    {
+      "name": "GitHub",
+      "href": "https://github.com/n-akshay-reddy"
+    },
+    {
+      "name": "Instagram",
+      "href": "https://www.instagram.com/n_akshay_reddy"
+    },
+    {
+      "name": "Resume",
+      "href": "https://n-akshay-reddy.github.io/resume/index.pdf"
+    },
+    {
+      "name": "LeetCode",
+      "href": "https://leetcode.com/u/n-akshay-reddy"
+    }
+  ]
+}
