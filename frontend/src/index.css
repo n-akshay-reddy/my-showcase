@@ -1,3 +1,15 @@
+
+/* ========================================
+   GLOBAL FONT
+======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+
+/* ========================================
+   GLOBAL THEME
+======================================== */
+
 :root[data-theme="dark-mode"] {
     --background: #0f1117;
     --text: #ffffff;
@@ -8,24 +20,43 @@
     --text: #111111;
 }
 
+
+/* ========================================
+   GLOBAL STYLES
+======================================== */
+
 body {
     margin: 0;
     background: var(--background);
     color: var(--text);
-
+    font-family: 'Inter', sans-serif;
     transition:
         background-color 0.25s ease,
         color 0.25s ease;
 }
 
-html,body {
-  max-width: 100%;
-  overflow-x: hidden;
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-body {
-    font-family: sans-serif;
+
+/* ========================================
+   FORM ELEMENTS
+======================================== */
+
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
 }
+
+
+/* ========================================
+   GLOBAL PAGE LAYOUT
+======================================== */
 
 :root {
     --navbar-height: 70px;
@@ -36,6 +67,11 @@ body {
     padding-top: var(--navbar-height);
     padding-bottom: var(--page-bottom-space);
 }
+
+
+/* ========================================
+   RESPONSIVE LAYOUT
+======================================== */
 
 @media (max-width: 1000px) {
     :root {

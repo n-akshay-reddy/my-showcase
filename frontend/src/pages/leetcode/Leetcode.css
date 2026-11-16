@@ -1,0 +1,128 @@
+
+.leetcode-page {
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.leetcode-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas:
+        "profile search"
+        "main    skills";
+    column-gap: 16px;
+    row-gap: 20px;
+    align-items: stretch;
+
+    width: min(1400px, calc(100% - 40px));
+    margin: 0 auto;
+    /* bottom space so the floating dock never covers the last card */
+    box-sizing: border-box;
+}
+
+.leetcode-layout > * {
+    min-width: 0;
+}
+
+
+/* ---------- row 1: profile + search ---------- */
+
+.leetcode-slot-profile {
+    grid-area: profile;
+    display: flex;
+    align-items: center;          /* centred against the search card */
+}
+
+/* avatar's left edge lines up with the cards underneath */
+.leetcode-slot-profile .lcp {
+    height: auto;
+    padding-inline: 0;
+}
+
+.leetcode-slot-search {
+    grid-area: search;
+    display: flex;
+    align-items: center;
+}
+
+
+/* ---------- row 2: main column ---------- */
+
+.leetcode-slot-main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* every card in the left column is exactly the column width, so the
+   left and right edges form straight lines */
+.leetcode-slot-main .ps,
+.leetcode-slot-main .activity-calendar,
+.leetcode-slot-main .leetcode-shimmer-calendar {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+}
+
+
+/* ---------- row 2: skills column ----------
+   The slot is as tall as the left column (the panel inside is
+   absolutely positioned, so it never stretches the row) and the
+   Top Skills body scrolls inside it. */
+
+.leetcode-slot-skills {
+    grid-area: skills;
+    position: relative;
+    min-height: 420px;
+}
+
+.leetcode-skills-fill {
+    position: absolute;
+    inset: 0;
+}
+
+
+/* ---------- theme toggle ---------- */
+
+.leetcode-theme-toggle {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 50;
+
+    padding: 7px 14px;
+
+    font: 600 12px/1 "Inter", system-ui, sans-serif;
+    color: var(--lp-text, #1c2033);
+
+    background: var(--lp-surface, #f6f7fc);
+    border: 1px solid var(--lp-border, #e8eaf4);
+    border-radius: 999px;
+    cursor: pointer;
+
+    transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.leetcode-theme-toggle:hover {
+    border-color: #8b5cf6;
+    transform: translateY(-1px);
+}
+
+
+/* ---------- tablet / mobile: single column ---------- */
+
+@media (max-width: 900px) {
+    .leetcode-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "profile"
+            "search"
+            "main"
+            "skills";
+    }
+
+    .leetcode-slot-skills {
+        min-height: 460px;
+    }
+}

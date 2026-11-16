@@ -1,18 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { ArrowUp, Maximize2, Minimize2, Minus, Sparkles, X } from "lucide-react";
+import { useStore ,useDispatch, useSelector } from "react-redux";
+import {
+    ArrowUp, Check, Circle, Loader2, Maximize2, Minimize2, Minus, Sparkles, Square, X,
+} from "lucide-react";
 
 import SreeviRobot from "../SreeviRobot/SreeviRobot";
 import { sendSreeviMessage } from "../../../ai/services/sreeviApi";
+import { buildContext } from "../../../ai/context/buildContext";
+import { createRun, runTurn } from "../../../ai/runner/runTurn";
+import { CHAT_CONFIG } from "../../../ai/config/chatConfig";
 import { useNavigate } from "react-router-dom";
-import { executeFrontendTool } from "../../../ai/executor/executeFrontendTool";
 import {
+    clearConversation,
     closeChat,
-    messageReceived,
-    startWorking,
+    selectBusy,
     selectSreevi,
-    SREEVI_STATUS,
+    startTurn,
+    turnCancelled,
+    turnFailed,
 } from "../../../state-management/Sreevi/SreeviSlice";
 import "./SreeviChat.css";
 
@@ -52,33 +58,150 @@ function panelBox(expanded, { w: vw, h: vh }) {
     return { width: w, height: h, right: r, bottom: b };
 }
 
-// The API may return a string or an object; the UI always needs text.
-const toText = (data) =>
-    typeof data === "string" ? data : data?.text ?? data?.message ?? JSON.stringify(data);
+const friendlyError = (error) =>
+    error instanceof TypeError
+        ? "Can't reach the server. Is the backend running and is its URL correct?"
+        : error?.message || "Sreevi couldn't complete your request.";
+
+/* ───────────── one turn: the visitor's bubble, Sreevi's bubble, the live checklist ───────────── */
+
+function TaskIcon({ status }) {
+    if (status === "done") return <Check size={14} />;
+    if (status === "running") return <Loader2 size={14} className="sv-spin" />;
+    if (status === "failed") return <X size={14} />;
+    if (status === "skipped") return <Minus size={14} />;
+    return <Circle size={12} />;
+}
+
+// pending/running show what is being done; finished tasks show what happened
+const taskText = (task) =>
+    task.status === "done" || task.status === "skipped" ? task.result || task.label : task.label;
+
+function TurnView({ turn, onLinkClick }) {
+    const [showSteps, setShowSteps] = useState(false); // view state only, never stored in Redux
+
+    const running = turn.status === "running";
+    const failed = turn.status === "failed";
+    const stepCount = turn.tasks.reduce((n, t) => n + t.steps.length, 0);
+    const replyText = turn.reply?.text ?? (turn.status === "cancelled" ? "Stopped." : "");
+
+    return (
+        <>
+            <div className="sv-msg sv-msg--user">
+                <div className="sv-msg__bubble">
+                    <p>{turn.user.text}</p>
+                </div>
+            </div>
+
+            {turn.status === "thinking" && (
+                <div className="sv-msg sv-msg--agent" role="status" aria-label="Sreevi is working">
+                    <div className="sv-msg__bubble sv-typing">
+                        <i /><i /><i />
+                    </div>
+                </div>
+            )}
+
+            {replyText && (
+                <div className="sv-msg sv-msg--agent">
+                    <div className={`sv-msg__bubble ${turn.reply?.isError || failed ? "is-error" : ""}`}>
+                        <p>{replyText}</p>
+
+                        {turn.tasks.length > 0 && (
+                            <ul className="sv-tasks">
+                                {turn.tasks.map((task) => {
+                                    // live while running or expanded; otherwise only a failed step stays visible
+                                    const steps =
+                                        running || showSteps
+                                            ? task.steps
+                                            : task.steps.filter((s) => s.status === "failed");
+                                    const link =
+                                        task.link && (task.status === "running" || task.status === "done")
+                                            ? task.link
+                                            : null;
+
+                                    return (
+                                        <li key={task.id} className={`sv-task sv-task--${task.status}`}>
+                                            <span className="sv-task__icon">
+                                                <TaskIcon status={task.status} />
+                                            </span>
+                                            <div className="sv-task__body">
+                                                <span className="sv-task__text">{taskText(task)}</span>
+
+                                                {task.status === "running" && task.result && (
+                                                    <span className="sv-task__note">{task.result}</span>
+                                                )}
+
+                                                {link && (
+                                                    <a
+                                                        className="sv-msg__link"
+                                                        href={link.href}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={onLinkClick}
+                                                    >
+                                                        {link.label}
+                                                    </a>
+                                                )}
+
+                                                {steps.length > 0 && (
+                                                    <ul className="sv-steps">
+                                                        {steps.map((step) => (
+                                                            <li key={step.id} className={`sv-step sv-step--${step.status}`}>
+                                                                <span className="sv-task__icon">
+                                                                    <TaskIcon status={step.status} />
+                                                                </span>
+                                                                <span>
+                                                                    {step.label}
+                                                                    {step.detail && (
+                                                                        <span className="sv-task__note"> · {step.detail}</span>
+                                                                    )}
+                                                                </span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        )}
+
+                        {failed && !turn.reply?.isError && turn.error && (
+                            <p className="sv-turn__error">{turn.error.message}</p>
+                        )}
+
+                        {stepCount > 0 && !running && (
+                            <button type="button" className="sv-steps-btn" onClick={() => setShowSteps((v) => !v)}>
+                                {showSteps ? "Hide steps" : `Show steps (${stepCount})`}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}
+
+/* ───────────── the chat panel ───────────── */
 
 function SreeviChat() {
     const dispatch = useDispatch();
+    const store = useStore();
     const navigate = useNavigate();
-    const { isOpen, status } = useSelector(selectSreevi);
+    const { isOpen, turns } = useSelector(selectSreevi);
+    const busy = useSelector(selectBusy);
 
-    const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState("");
-    const [typing, setTyping] = useState(false);
     const [expanded, setExpanded] = useState(false);
     const viewport = useViewport();
 
     const panelRef = useRef(null);
     const listRef = useRef(null);
     const inputRef = useRef(null);
-    const pendingRef = useRef(null); // timer for a delayed action (open link, navigate)
+    const runRef = useRef(null); // the turn in flight: { signal, abort, skipCountdown }
 
-    const busy = typing || status === SREEVI_STATUS.WORKING;
     const canSend = draft.trim() && !busy;
-
-    const cancelPending = () => clearTimeout(pendingRef.current);
-
-    // Don't fire a delayed action after the chat unmounts
-    useEffect(() => () => clearTimeout(pendingRef.current), []);
 
     // A closed panel must not keep focus: `inert` handles that, `aria-hidden` doesn't.
     useEffect(() => {
@@ -87,14 +210,22 @@ function SreeviChat() {
 
     const minimize = () => {
         setExpanded(false);
-        dispatch(closeChat());
+        dispatch(closeChat()); // the history is kept
     };
 
+    // X: stop anything running and wipe the chat
     const endChat = () => {
-        cancelPending();
-        setMessages([]);
+        runRef.current?.abort();
+        dispatch(clearConversation());
         setDraft("");
         minimize();
+    };
+
+    // Stop button: cancel the turn in flight. Finished tasks stay as they are.
+    const stop = () => {
+        runRef.current?.abort();
+        const last = store.getState().sreevi.turns.at(-1);
+        if (last) dispatch(turnCancelled({ turnId: last.id }));
     };
 
     // Focus on open; Esc collapses first, then closes.
@@ -115,7 +246,7 @@ function SreeviChat() {
 
     useEffect(() => {
         listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
-    }, [messages, busy]);
+    }, [turns]);
 
     useEffect(() => {
         if (isOpen && listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -128,55 +259,46 @@ function SreeviChat() {
         el.style.height = `${Math.min(el.scrollHeight, 110)}px`;
     }, [draft]);
 
-    const push = (role, text, error, link = null) =>
-        setMessages((m) => [...m, { id: crypto.randomUUID(), role, text, error, link }]);
+    // Don't leave a run going if the chat unmounts
+    useEffect(() => () => runRef.current?.abort(), []);
 
     const send = async (text) => {
         const value = text.trim();
         if (!value || busy) return;
 
-        cancelPending(); // a new message cancels any action still counting down
+        const before = store.getState().sreevi;
+        const epoch = before.epoch;                    // which chat this request belongs to
+        const context = buildContext(before.turns);    // built BEFORE the new turn is added
 
-        push("user", value);
+        const started = startTurn(value);
+        dispatch(started);
         setDraft("");
-        setTyping(true);
-        dispatch(startWorking("Thinking")); // launcher shows "Working"
+
+        const turnId = started.payload.id;
+        const run = createRun();
+        runRef.current = run;
+
+        const stale = () => run.signal.aborted || store.getState().sreevi.epoch !== epoch;
 
         try {
-            const decision = await sendSreeviMessage(value);
-            let reply = toText(decision);
-            let failed = false;
-            let link = null;
+            const decision = await sendSreeviMessage(started.payload.text, context, run.signal);
+            if (stale()) return; // Stop or X while waiting: drop the reply and run nothing
 
-            if (decision?.type === "execute" && decision.tool?.runsOn === "frontend") {
-                const result = executeFrontendTool(decision.tool, { navigate });
-
-                // Failure, "already done", or a delayed action: show the tool's own message
-                if (!result.ok || result.changed === false || result.after) {
-                    reply = result.message;
-                    failed = !result.ok;
-                }
-
-                link = result.link ?? null;
-
-                // Delayed action: tell the user first, run it after the delay
-                if (result.ok && result.after) {
-                    pendingRef.current = setTimeout(result.after, result.delayMs ?? 5000);
-                }
-            }
-
-            push("agent", reply, failed, link);
-            // Chat open -> back to idle. Minimized -> "Result ready" + badge + preview.
-            dispatch(messageReceived(reply.length > 48 ? `${reply.slice(0, 48)}…` : reply));
+            await runTurn({
+                turnId,
+                decision,
+                run,
+                epoch,
+                dispatch,
+                getState: store.getState,
+                navigate,
+            });
+            console.log(store.getState().sreevi);
         } catch (error) {
-            const msg =
-                error instanceof TypeError
-                    ? "Can't reach the server. Is the backend running and is its URL correct?"
-                    : error.message || "Sreevi couldn't complete your request.";
-            push("agent", msg, true);
-            dispatch(messageReceived("Something went wrong"));
+            if (stale()) return;
+            dispatch(turnFailed({ turnId, message: friendlyError(error) }));
         } finally {
-            setTyping(false);
+            if (runRef.current === run) runRef.current = null;
         }
     };
 
@@ -242,7 +364,7 @@ function SreeviChat() {
                         </div>
                     </div>
 
-                    {messages.length === 0 && (
+                    {turns.length === 0 && (
                         <div className="sv-chips">
                             {SUGGESTIONS.map((s) => (
                                 <button key={s} type="button" onClick={() => send(s)}>
@@ -252,32 +374,13 @@ function SreeviChat() {
                         </div>
                     )}
 
-                    {messages.map((m) => (
-                        <div key={m.id} className={`sv-msg sv-msg--${m.role}`}>
-                            <div className={`sv-msg__bubble ${m.error ? "is-error" : ""}`}>
-                                <p>{m.text}</p>
-                                {m.link && (
-                                    <a
-                                        className="sv-msg__link"
-                                        href={m.link.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={cancelPending}
-                                    >
-                                        {m.link.label}
-                                    </a>
-                                )}
-                            </div>
-                        </div>
+                    {turns.map((turn) => (
+                        <TurnView
+                            key={turn.id}
+                            turn={turn}
+                            onLinkClick={() => runRef.current?.skipCountdown()}
+                        />
                     ))}
-
-                    {busy && (
-                        <div className="sv-msg sv-msg--agent" role="status" aria-label="Sreevi is working">
-                            <div className="sv-msg__bubble sv-typing">
-                                <i /><i /><i />
-                            </div>
-                        </div>
-                    )}
                 </div>
 
                 <form
@@ -296,13 +399,25 @@ function SreeviChat() {
                         value={draft}
                         placeholder="Ask Sreevi anything..."
                         aria-label="Message Sreevi"
-                        maxLength={1000}
+                        maxLength={CHAT_CONFIG.maxMessageChars}
                         onChange={(e) => setDraft(e.target.value)}
                         onKeyDown={onKeyDown}
                     />
-                    <button type="submit" className="sv-chat__send" aria-label="Send message" disabled={!canSend}>
-                        <ArrowUp size={20} strokeWidth={2.5} />
-                    </button>
+                    {busy ? (
+                        <button
+                            type="button"
+                            className="sv-chat__send is-stop"
+                            aria-label="Stop"
+                            title="Stop"
+                            onClick={stop}
+                        >
+                            <Square size={16} fill="currentColor" />
+                        </button>
+                    ) : (
+                        <button type="submit" className="sv-chat__send" aria-label="Send message" disabled={!canSend}>
+                            <ArrowUp size={20} strokeWidth={2.5} />
+                        </button>
+                    )}
                 </form>
             </section>
         </>,

@@ -1,0 +1,107 @@
+/* Company work window: highlight list and hover popup */
+/* High z-index + rendered in <body>: the navbar and floating buttons can never cover the window or its close button. */
+.exp-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); background: rgba(15, 10, 30, .5); backdrop-filter: blur(4px); animation: exp-fade .25s; }
+@keyframes exp-fade { from { opacity: 0; } }
+.exp-window { width: min(1080px, 100%); height: min(720px, 100%); display: flex; flex-direction: column; background: var(--bg); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 40px 100px rgba(0, 0, 0, .4); overflow: hidden; }
+.exp-window-head { display: flex; gap: 16px; align-items: center; padding: 22px 30px 16px; background: var(--bg); }
+.exp-window-head .exp-mono { width: 48px; height: 48px; border-radius: 15px; font-size: 16px; }
+.exp-window-head h2 { font-size: 21px; margin: 0; letter-spacing: -.03em; line-height: 1.2; }
+.exp-window-role { margin: 2px 0 0; font-size: 14px; font-weight: 600; }
+.exp-window-meta { margin: 1px 0 0; font-size: 13px; color: var(--mut); }
+/* close buttons: soft round icon button, no border, just a gentle tint on hover */
+.exp-close, .exp-popup-close { display: grid; place-items: center; flex: none; padding: 0; border: 0; border-radius: 50%; cursor: pointer; color: var(--mut); background: transparent; transition: background .2s, color .2s, transform .15s; }
+.exp-close { margin-left: auto; width: 40px; height: 40px; }
+.exp-popup-close { position: absolute; top: 14px; right: 14px; z-index: 3; width: 32px; height: 32px; }
+.exp-close svg { width: 20px; height: 20px; }
+.exp-popup-close svg { width: 18px; height: 18px; }
+.exp-close svg, .exp-popup-close svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.exp-close:hover, .exp-popup-close:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 9%, transparent); }
+.exp-close:active, .exp-popup-close:active { transform: scale(.92); background: color-mix(in srgb, var(--ink) 14%, transparent); }
+.exp-close:focus-visible, .exp-popup-close:focus-visible { outline: 2px solid var(--g3); outline-offset: 2px; }
+.exp-tools { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 0 30px 16px; border-bottom: 1px solid var(--line); }
+.exp-tabs { display: inline-flex; gap: 2px; padding: 4px; border-radius: 99px; background: var(--tint); }
+.exp-tabs button { border: 0; background: none; color: var(--mut); border-radius: 99px; padding: 8px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.exp-tabs button[aria-pressed="true"] { background: var(--btn); color: #fff; box-shadow: 0 4px 14px color-mix(in srgb, var(--g2) 35%, transparent); }
+.exp-hint { margin-left: auto; font-size: 13px; color: var(--mut); }
+.exp-body { flex: 1; min-height: 0; position: relative; overflow: hidden; --popup-w: 430px; }
+.exp-body::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(color-mix(in srgb, var(--g3) 30%, transparent) 1px, transparent 1.5px) 0 0 / 22px 22px; -webkit-mask-image: linear-gradient(90deg, transparent 50%, #000 88%); mask-image: linear-gradient(90deg, transparent 50%, #000 88%); opacity: .55; }
+.exp-grid { position: absolute; top: 0; bottom: 0; left: 0; width: min(560px, 54%); overflow-y: auto; overscroll-behavior: contain; padding: 0 14px 70px 30px; scrollbar-gutter: stable; }
+.exp-grid, .exp-popup-inner { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--g3) 40%, transparent) transparent; }
+.exp-section-title { position: sticky; top: 0; z-index: 2; margin: 0; padding: 22px 0 12px; background: var(--bg); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--mut); display: flex; gap: 12px; align-items: center; }
+.exp-section-title em { font-style: normal; font-size: 11px; padding: 2px 9px; border-radius: 99px; background: var(--tint); color: var(--g3); letter-spacing: 0; }
+.exp-section-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.exp-list { display: flex; flex-direction: column; gap: 14px; padding: 2px 0 8px; }
+
+/* highlight cards */
+.exp-card { --c: var(--new); position: relative; display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; color: inherit; cursor: pointer; padding: 15px 16px 15px 22px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); -webkit-tap-highlight-color: transparent; transition: transform .25s cubic-bezier(.2, .8, .25, 1), border-color .2s, background .2s, box-shadow .25s, opacity .25s; animation: exp-card-in .5s cubic-bezier(.2, .8, .25, 1) backwards; animation-delay: calc(var(--n, 0) * 32ms); }
+.exp-card.is-fix { --c: var(--fix); }
+@keyframes exp-card-in { from { opacity: 0; transform: translateY(14px); } }
+/* the 8px nudge here is CARD_SHIFT in WorkWindow.jsx */
+.exp-card:hover, .exp-card.is-active { border-color: color-mix(in srgb, var(--c) 40%, var(--line)); background: linear-gradient(100deg, color-mix(in srgb, var(--c) 10%, var(--card)), var(--card) 90%); box-shadow: 0 10px 26px color-mix(in srgb, var(--c) 13%, transparent); transform: translateX(8px); }
+.exp-card:hover .exp-icon, .exp-card.is-active .exp-icon { background: var(--c); color: #fff; transform: scale(1.07); }
+.exp-grid.is-dimmed .exp-card:not(.is-active) { opacity: .5; }
+.exp-icon { transition: background .2s, color .2s, transform .25s cubic-bezier(.2, .9, .3, 1); flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 16px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, var(--card)); position: relative; z-index: 1; }
+.exp-card-text { min-width: 0; flex: 1; position: relative; z-index: 1; }
+.exp-card-text b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -.015em; line-height: 1.3; }
+.exp-card-note { display: block; font-size: 13px; color: var(--mut); margin-top: 2px; line-height: 1.4; }
+.exp-chevron { flex: none; position: relative; z-index: 1; font-size: 22px; line-height: 1; color: var(--c); opacity: .3; transition: transform .25s, opacity .2s; }
+.exp-card:hover .exp-chevron, .exp-card.is-active .exp-chevron { opacity: 1; transform: translateX(4px); }
+
+
+/* beam: animated dashed line from the hovered card to the popup */
+.exp-beam { --c: var(--new); position: absolute; height: 44px; z-index: 29; transition: top .4s cubic-bezier(.2, .9, .3, 1); }
+.exp-beam.is-fix { --c: var(--fix); }
+.exp-beam[data-tracking] { transition: none; }
+.exp-beam::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--c) 0 7px, transparent 7px 14px); transform-origin: left; animation: exp-beam-grow .35s cubic-bezier(.2, .9, .3, 1) .05s backwards, exp-beam-flow .5s linear infinite; }
+.exp-beam i { position: absolute; left: -5px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 50%, transparent); animation: exp-beam-pulse 1.6s infinite; }
+@keyframes exp-beam-grow { from { transform: scaleX(0); } }
+@keyframes exp-beam-flow { to { background-position: 14px 0; } }
+@keyframes exp-beam-pulse { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+/* popup beside the hovered card */
+.exp-popup { --c: var(--new); position: absolute; left: 0; top: 0; width: var(--popup-w); z-index: 30; padding: 1.5px; border-radius: 26px; background: linear-gradient(145deg, var(--c), var(--g3) 55%, color-mix(in srgb, var(--c) 35%, transparent)); box-shadow: 0 28px 70px color-mix(in srgb, var(--c) 14%, transparent), 0 10px 26px rgba(20, 8, 50, .16); transform-origin: left center; transition: top .4s cubic-bezier(.2, .9, .3, 1); animation: exp-popup-in .55s cubic-bezier(.2, 1.15, .3, 1) backwards; }
+.exp-popup.is-fix { --c: var(--fix); }
+.exp-popup[data-tracking], .exp-popup[data-tracking] .exp-notch { transition: none; }
+@keyframes exp-popup-in { from { opacity: 0; transform: translateX(-34px) scale(.92); filter: blur(8px); } }
+.exp-notch { position: absolute; left: -7px; top: calc(var(--notch-y, 50px) - 8px); width: 16px; height: 16px; border-radius: 4px; background: var(--c); transform: rotate(45deg); box-shadow: 0 0 20px var(--c); transition: top .4s cubic-bezier(.2, .9, .3, 1); }
+.exp-popup-inner { position: relative; overflow-y: auto; overscroll-behavior: contain; max-height: var(--max-h, 520px); border-radius: 25px; padding: 26px 28px 24px; background: radial-gradient(380px circle at var(--gx, 25%) var(--gy, 0%), color-mix(in srgb, var(--c) 18%, transparent), transparent 65%), var(--card); }
+.exp-popup-head { display: flex; gap: 14px; align-items: center; padding-right: 46px; }
+.exp-popup-head .exp-icon { width: 46px; height: 46px; font-size: 19px; }
+.exp-eyebrow { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.exp-area { display: block; font-size: 13px; color: var(--mut); margin-top: 1px; }
+.exp-pinned-badge { display: none; margin-left: auto; font-size: 11px; font-weight: 700; color: var(--c); padding: 3px 10px; border-radius: 99px; background: color-mix(in srgb, var(--c) 12%, var(--card)); }
+.exp-popup.is-pinned .exp-pinned-badge { display: inline-block; }
+.exp-popup-content h3 { font-size: 25px; line-height: 1.2; letter-spacing: -.03em; margin: 18px 0 6px; }
+.exp-popup-note { margin: 0; color: var(--mut); font-size: 14.5px; }
+.exp-steps { margin-top: 20px; border-left: 2px solid color-mix(in srgb, var(--c) 32%, var(--line)); padding-left: 20px; display: flex; flex-direction: column; gap: 18px; }
+.exp-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--c); margin-bottom: 4px; }
+.exp-step p, .exp-result p { margin: 0; font-size: 14.5px; line-height: 1.65; }
+.exp-result { position: relative; overflow: hidden; margin-top: 20px; padding: 16px 18px; border-radius: 16px; background: color-mix(in srgb, var(--c) 7%, var(--card)); border: 1px solid color-mix(in srgb, var(--c) 38%, var(--line)); }
+.exp-result p { font-weight: 600; }
+.exp-popup-inner .exp-chips { margin-top: 18px; }
+.exp-popup-inner .exp-chips span { background: color-mix(in srgb, var(--c) 11%, var(--card)); color: var(--c); }
+.exp-popup-foot { margin: 18px 0 0; font-size: 12px; color: var(--mut); }
+.exp-popup-foot .when-pinned { display: none; }
+.exp-popup.is-pinned .exp-popup-foot .when-hover { display: none; }
+.exp-popup.is-pinned .exp-popup-foot .when-pinned { display: inline; }
+.exp-popup-content h3, .exp-popup-content .exp-popup-note, .exp-popup-content .exp-step, .exp-popup-content .exp-result, .exp-popup-content .exp-chips span, .exp-popup-content .exp-popup-foot { animation: exp-up .5s cubic-bezier(.2, .9, .3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
+@keyframes exp-up { from { opacity: 0; transform: translateY(14px); } }
+.exp-popup-content .exp-chips span { animation-name: exp-pop; }
+@keyframes exp-pop { from { opacity: 0; transform: scale(.6); } }
+.exp-sheet-backdrop { position: absolute; inset: 0; z-index: 25; background: rgba(10, 6, 24, .5); animation: exp-fade .25s; }
+
+/* sheet mode: touch screens and narrow windows */
+.exp-body.is-sheet::before, .exp-body.is-sheet .exp-idle, .exp-body.is-sheet .exp-notch, .exp-body.is-sheet .exp-popup-foot { display: none; }
+.exp-body.is-sheet .exp-grid { width: auto; right: 0; padding-left: 18px; }
+.exp-body.is-sheet .exp-card:hover, .exp-body.is-sheet .exp-card.is-active { transform: none; }
+.exp-body.is-sheet .exp-grid.is-dimmed .exp-card:not(.is-active) { opacity: 1; }
+.exp-body.is-sheet .exp-popup { left: 0 !important; top: auto !important; bottom: 0; width: 100%; border-radius: 26px 26px 0 0; transform-origin: bottom; box-shadow: 0 -20px 60px rgba(0, 0, 0, .4); animation-name: exp-sheet-in; }
+@keyframes exp-sheet-in { from { transform: translateY(100%); } }
+.exp-body.is-sheet .exp-popup-inner { border-radius: 25px 25px 0 0; padding: 24px 20px 28px; }
+
+@media (max-width: 760px) {
+  .exp-window-head { padding: 18px 18px 12px; }
+  .exp-tools { padding: 0 18px 14px; }
+  .exp-hint { display: none; }
+  .exp-popup-content h3 { font-size: 22px; }
+}

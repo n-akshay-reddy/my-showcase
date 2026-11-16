@@ -1,0 +1,156 @@
+.lc-error {
+    /* If you have a fixed navbar, set --lc-offset to its height (e.g. 70px). */
+    --lc-offset: 0px;
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1000px;
+    height: calc(100dvh - var(--lc-offset));
+    margin: 0 auto;
+    padding: 24px;
+    overflow: hidden;                 /* never creates its own scrollbar */
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    column-gap: 40px;
+
+    color: #fff;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ---- image (left) ---- */
+
+.lc-error__image {
+    justify-self: center;
+    width: 100%;
+    max-width: 460px;
+    max-height: 60vh;                 /* keeps it inside the screen */
+    object-fit: contain;
+    filter: drop-shadow(0 20px 50px rgba(139, 92, 246, 0.4));
+}
+
+/* ---- content (right) ---- */
+
+.lc-error__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    text-align: left;
+}
+
+.lc-error__title {
+    margin: 0 0 10px;
+    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.5px;
+}
+
+.lc-error__gradient {
+    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.lc-error__subtitle {
+    margin: 0 0 20px;
+    max-width: 440px;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: #9ca3af;
+}
+
+.lc-error__details {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.lc-error__icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #ef4444;
+}
+
+.lc-error__text { min-width: 0; }
+
+.lc-error__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #f87171;
+}
+
+.lc-error__message {
+    margin-top: 2px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #e5e7eb;
+    word-break: break-word;
+}
+
+.lc-error__retry {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.lc-error__retry:hover:not(:disabled) { transform: translateY(-2px); }
+.lc-error__retry:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.lc-error__spin { display: inline-block; animation: lc-spin 0.8s linear infinite; }
+@keyframes lc-spin { to { transform: rotate(360deg); } }
+
+/* ---- tablet / mobile: stack, image smaller ---- */
+
+@media (max-width: 800px) {
+    .lc-error {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        align-content: center;
+        row-gap: 16px;
+        padding: 16px;
+    }
+
+    .lc-error__image {
+        max-width: 280px;
+        max-height: 30vh;
+    }
+
+    .lc-error__content {
+        align-items: center;
+        text-align: center;
+    }
+
+    .lc-error__details { text-align: left; }
+}
+
+/* very short screens (landscape phones): hide the image so nothing scrolls */
+
+@media (max-height: 480px) {
+    .lc-error__image { display: none; }
+    .lc-error { grid-template-columns: 1fr; }
+}

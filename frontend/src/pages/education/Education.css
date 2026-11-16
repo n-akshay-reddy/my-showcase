@@ -1,0 +1,311 @@
+/* ---------- theme (uses your global --background / --text) ---------- */
+.edu {
+    --ink: var(--text);
+    --mut: color-mix(in srgb, var(--text) 60%, transparent);
+    --surface: color-mix(in srgb, var(--text) 5%, var(--background));
+    --border: color-mix(in srgb, var(--text) 12%, transparent);
+    --track: color-mix(in srgb, var(--text) 12%, transparent);
+    --shadow: 0 20px 50px rgba(40, 20, 90, 0.1);
+    --g1: #fb923c;
+    --g2: #ec4899;
+    --g3: #9333ea;
+    --ease: cubic-bezier(0.2, 0.8, 0.25, 1);
+
+    position: relative;
+    isolation: isolate;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: var(--ink);
+    overflow-x: clip;
+}
+
+:root[data-theme="dark-mode"] .edu {
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    --g3: #b784ff;
+}
+
+.edu::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(520px 420px at 0% 18%, color-mix(in srgb, var(--g1) 14%, transparent), transparent 70%),
+        radial-gradient(620px 520px at 100% 62%, color-mix(in srgb, var(--g3) 16%, transparent), transparent 70%);
+}
+
+/* ---------- hero ---------- */
+.edu-hero { padding: 56px 0; }
+.edu-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g3); }
+.edu-hero h1 { margin: 12px 0 16px; max-width: 780px; font-size: clamp(38px, 6.4vw, 66px); font-weight: 800; line-height: 1.05; letter-spacing: -0.045em; }
+.edu-hero p { margin: 0; max-width: 520px; font-size: 17px; color: var(--mut); }
+.edu-gradient {
+    background: linear-gradient(95deg, var(--g1), var(--g2) 50%, var(--g3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ---------- timeline rail (top / height / transforms are set from the component) ---------- */
+.edu-path {
+    --lx: 50%;
+    position: relative;
+}
+
+.edu-rail {
+    position: absolute;
+    left: var(--lx);
+    width: 3px;
+    margin-left: -1.5px;
+    border-radius: 3px;
+    background: var(--track);
+    overflow: hidden;
+}
+.edu-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--g1), var(--g2) 55%, var(--g3));
+    transform: scaleY(0);
+    transform-origin: top;
+    will-change: transform;
+}
+
+.edu-orb {
+    position: absolute;
+    left: var(--lx);
+    z-index: 5;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    border-radius: 50%;
+    background: var(--background);
+    border: 3px solid var(--g2);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--g2) 20%, transparent), 0 0 20px var(--g2);
+    will-change: transform;
+}
+
+/* ---------- stage ---------- */
+.edu-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 76px 1fr;
+    margin-bottom: 110px;
+}
+
+.edu-node {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    border: 3px solid var(--track);
+    border-radius: 50%;
+    background: var(--background);
+    transition: background 0.4s, border-color 0.4s, box-shadow 0.4s, scale 0.4s var(--ease);
+}
+.edu-node.on {
+    border-color: var(--a2);
+    background: var(--a2);
+    scale: 1.15;
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--a2) 18%, transparent);
+}
+.edu-node.pulse { animation: edu-pulse 2s infinite; }
+@keyframes edu-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a2) 55%, transparent); }
+    100% { box-shadow: 0 0 0 14px transparent; }
+}
+
+/* ---------- entrance animation ---------- */
+.edu-card,
+.edu-year {
+    grid-row: 1;
+    opacity: 0;
+    will-change: translate, scale, opacity;
+    transition:
+        opacity 0.9s ease,
+        translate 1s var(--ease),
+        scale 1s var(--ease),
+        transform 0.3s ease-out,
+        border-color 0.3s;
+}
+.edu-card { scale: 0.95; }
+.edu-year { align-self: center; transition-delay: 0.15s; }
+
+.left .edu-card { grid-column: 1; translate: -60px 0; }
+.left .edu-year { grid-column: 3; padding-left: 18px; translate: 60px 0; }
+.right .edu-card { grid-column: 3; translate: 60px 0; }
+.right .edu-year { grid-column: 1; padding-right: 18px; text-align: right; translate: -60px 0; }
+
+.edu-stage.visible .edu-card,
+.edu-stage.visible .edu-year { opacity: 1; translate: 0 0; scale: 1; }
+
+/* card contents appear one after another */
+.edu-card > * {
+    opacity: 0;
+    translate: 0 16px;
+    transition: opacity 0.7s ease, translate 0.8s var(--ease);
+}
+.edu-stage.visible .edu-card > * { opacity: 1; translate: 0 0; }
+.edu-card > :nth-child(1) { transition-delay: 0.35s; }
+.edu-card > :nth-child(2) { transition-delay: 0.43s; }
+.edu-card > :nth-child(3) { transition-delay: 0.51s; }
+.edu-card > :nth-child(4) { transition-delay: 0.59s; }
+.edu-card > :nth-child(5) { transition-delay: 0.67s; }
+.edu-card > :nth-child(6) { transition-delay: 0.75s; }
+
+.edu-year b {
+    display: block;
+    font-size: clamp(70px, 11.5vw, 128px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px color-mix(in srgb, var(--a1) 35%, transparent);
+    transition: -webkit-text-stroke-color 0.8s 0.3s;
+}
+.edu-stage.visible .edu-year b { -webkit-text-stroke-color: color-mix(in srgb, var(--a2) 80%, transparent); }
+.edu-year span { display: block; margin-top: 12px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mut); }
+
+/* ---------- card ---------- */
+.edu-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    color: inherit;
+    text-decoration: none;
+    background:
+        linear-gradient(145deg, color-mix(in srgb, var(--a1) 9%, transparent), transparent 45%, color-mix(in srgb, var(--a2) 11%, transparent)),
+        var(--surface);
+    box-shadow: var(--shadow);
+}
+.edu-stage.visible .edu-card:hover {
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--a2) 55%, var(--border));
+}
+.edu-card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 26px;
+    right: 26px;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, transparent, var(--a1) 25%, var(--a2) 75%, transparent);
+}
+.edu-card::after {
+    content: "";
+    position: absolute;
+    top: -70px;
+    right: -70px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, color-mix(in srgb, var(--a2) 24%, transparent), transparent 70%);
+}
+
+.edu-head { position: relative; z-index: 1; display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.edu-mono {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--a2) 32%, transparent);
+}
+.edu-level { font-size: 11px; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; color: var(--a2); }
+.edu-period { font-size: 12.5px; font-weight: 600; color: var(--mut); }
+.edu-card h2 { margin: 0; font-size: 25px; line-height: 1.15; letter-spacing: -0.035em; }
+.edu-degree { margin: 10px 0 0; font-size: 15px; font-weight: 600; }
+.edu-location { margin: 3px 0 0; font-size: 13.5px; color: var(--mut); }
+.edu-board {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 4px 11px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--a2);
+    background: color-mix(in srgb, var(--a2) 13%, transparent);
+}
+
+.edu-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+}
+.edu-status {
+    padding: 4px 11px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--a2);
+    background: color-mix(in srgb, var(--a2) 13%, transparent);
+}
+
+/* ---------- gauge ---------- */
+.edu-gauge { position: relative; flex: none; width: 158px; height: 88px; }
+.edu-gauge svg { width: 100%; height: 100%; overflow: visible; }
+.edu-gauge path { fill: none; stroke-width: 11; stroke-linecap: round; }
+.edu-gauge .track { stroke: var(--track); }
+.edu-gauge .value {
+    stroke-dasharray: 189;
+    stroke-dashoffset: 189;
+    transition: stroke-dashoffset 1.8s var(--ease) 0.5s;
+}
+.edu-stage.visible .value { stroke-dashoffset: var(--offset); }
+.edu-stop-a { stop-color: var(--a1); }
+.edu-stop-b { stop-color: var(--a2); }
+.edu-gauge-text { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; line-height: 1; }
+.edu-gauge-text b { font-size: 30px; font-weight: 800; letter-spacing: -0.04em; }
+.edu-gauge-text small { margin-top: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--mut); }
+
+/* ---------- "Now" card ---------- */
+.edu-now {
+    border: 1.5px dashed color-mix(in srgb, var(--a2) 55%, var(--border));
+    background: transparent;
+    box-shadow: none;
+}
+.edu-now::before,
+.edu-now::after { display: none; }
+.edu-now h2 { margin-top: 8px; font-size: 24px; }
+.edu-now p { margin: 8px 0 0; font-size: 14.5px; color: var(--mut); }
+.edu-cta { display: inline-block; margin-top: 16px; font-size: 14px; font-weight: 700; color: var(--a2); }
+.edu-arrow { display: inline-block; transition: transform 0.25s; }
+.edu-now:hover .edu-arrow { transform: translateX(6px); }
+
+/* ---------- mobile ---------- */
+@media (max-width: 760px) {
+    .edu-path { --lx: 22px; }
+    .edu-stage { grid-template-columns: 44px 1fr; margin-bottom: 64px; }
+    .edu-node { grid-column: 1; grid-row: 1 / 3; align-self: start; justify-self: start; margin: 42px 0 0 13px; }
+    .left .edu-card,
+    .right .edu-card { grid-column: 2; grid-row: 2; translate: 0 36px; }
+    .left .edu-year,
+    .right .edu-year { grid-column: 2; grid-row: 1; padding: 0 0 12px; text-align: left; translate: 0 36px; }
+    .edu-year b { font-size: 64px; }
+    .edu-card { padding: 24px; }
+    .edu-foot { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .edu * { transition: none !important; animation: none !important; }
+    .edu-card, .edu-year, .edu-card > * { opacity: 1; translate: 0 0 !important; scale: 1; }
+}

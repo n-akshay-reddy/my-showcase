@@ -1,0 +1,1207 @@
+/* ==========================================================================
+   Contact page
+   Text colour follows the site token (--text).
+   Surfaces switch with :root[data-theme="light-mode"]; dark is the default.
+   Radii: 12 controls, 20 inner panels, 28 main cards.
+   ========================================================================== */
+
+@property --ct-o {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --ct-a {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* ---------- Tokens ---------- */
+.ct-scope {
+    --ct-ink: var(--text, #f3f3fb);
+    --ct-card: #15141f;
+    --ct-field: #0e0d18;
+    --ct-line: #2b2842;
+    --ct-muted: #9b9eb9;
+    --ct-chip: #231e3a;
+    --ct-glow: rgba(168, 85, 247, 0.28);
+    --ct-p1: #a855f7;
+    --ct-p2: #7c3aed;
+    --ct-pink: #ec4899;
+    --ct-ok: #10b981;
+    --ct-bad: #e11d48;
+    --ct-btn: #7c4dff;
+    --ct-deep: #4c1d95;
+    --ct-thumb: color-mix(in srgb, var(--ct-muted) 45%, transparent);
+    --ct-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    color: var(--ct-ink);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+:root[data-theme="light-mode"] .ct-scope {
+    --ct-ink: var(--text, #171730);
+    --ct-card: #ffffff;
+    --ct-field: #f6f5fb;
+    --ct-line: #e6e1f4;
+    --ct-muted: #6b6f8a;
+    --ct-chip: #f3ebff;
+    --ct-glow: rgba(168, 85, 247, 0.18);
+}
+
+/* ---------- Base ---------- */
+.ct-scope *,
+.ct-scope *::before,
+.ct-scope *::after {
+    box-sizing: border-box;
+}
+
+.ct-scope svg {
+    display: block;
+    flex: none;
+}
+
+:where(.ct-scope) button,
+:where(.ct-scope) input,
+:where(.ct-scope) textarea {
+    font: inherit;
+    color: inherit;
+}
+
+:where(.ct-scope) a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ct-scope :focus-visible {
+    outline: 2px solid var(--ct-p1);
+    outline-offset: 2px;
+    border-radius: 10px;
+}
+
+/* Slim neutral scrollbar: no arrows, no track. */
+.ct-scope ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.ct-scope ::-webkit-scrollbar-track,
+.ct-scope ::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+.ct-scope ::-webkit-scrollbar-thumb {
+    background: var(--ct-thumb);
+    border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.ct-scope ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--ct-muted) 70%, transparent);
+    background-clip: padding-box;
+}
+
+.ct-scope ::-webkit-scrollbar-button {
+    display: none;
+}
+
+@supports (-moz-appearance: none) {
+
+    .ct-scope,
+    .ct-scope * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--ct-thumb) transparent;
+    }
+}
+
+.ct-page {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+/* ---------- Layout ---------- */
+.ct-hero,
+.ct-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 20px;
+}
+
+.ct-hero {
+    align-items: end;
+    padding: 36px 0 24px;
+}
+
+.ct-grid {
+    align-items: stretch;
+}
+
+.ct-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.ct-side .ct-ch {
+    flex: 1;
+}
+
+.ct-title {
+    margin: 0 0 14px;
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 800;
+}
+
+.ct-grad {
+    background: linear-gradient(90deg, var(--ct-p1), var(--ct-pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.ct-lead {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 17px;
+    color: var(--ct-muted);
+}
+
+/* ---------- Location ---------- */
+.ct-where {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 20px;
+    background: var(--ct-card);
+    border: 1px solid var(--ct-line);
+}
+
+.ct-pin {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    color: #fff;
+    background: var(--ct-btn);
+}
+
+.ct-wt {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.ct-wt b {
+    font-size: 14.5px;
+}
+
+.ct-wt span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ct-ok);
+}
+
+.ct-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ct-ok);
+    flex: none;
+    animation: ct-ping 2s infinite;
+}
+
+@keyframes ct-ping {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    }
+}
+
+/* ---------- Main card ---------- */
+.ct-card {
+    position: relative;
+    padding: 28px;
+    border-radius: 28px;
+    background: var(--ct-card);
+    border: 1px solid var(--ct-line);
+    box-shadow: 0 24px 56px -36px var(--ct-glow);
+    overflow: hidden;
+    animation: ct-rise 0.7s var(--ct-ease) both;
+}
+
+.ct-card--main::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ct-p1), var(--ct-pink));
+}
+
+@keyframes ct-rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.ct-ct {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.ct-ct svg {
+    color: var(--ct-p1);
+}
+
+/* ---------- Fields ---------- */
+.ct-scope label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ct-muted);
+}
+
+.ct-opt-l {
+    font-weight: 500;
+}
+
+.ct-scope input,
+.ct-scope textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--ct-line);
+    background: var(--ct-field);
+    transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.ct-scope input::placeholder,
+.ct-scope textarea::placeholder {
+    color: color-mix(in srgb, var(--ct-muted) 80%, transparent);
+}
+
+.ct-scope input:focus,
+.ct-scope textarea:focus {
+    outline: none;
+    border-color: var(--ct-p1);
+    box-shadow: 0 0 0 3px var(--ct-glow);
+}
+
+.ct-scope input[data-state="ok"] {
+    border-color: var(--ct-ok);
+}
+
+.ct-scope input[data-state="bad"] {
+    border-color: var(--ct-bad);
+}
+
+.ct-scope input:disabled,
+.ct-scope textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ct-f2 {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.ct-hintline {
+    margin: -6px 0 12px;
+    font-size: 12.5px;
+    color: var(--ct-bad);
+}
+
+.ct-hintline:empty {
+    display: none;
+}
+
+.ct-message {
+    display: block;
+    min-height: 170px;
+    margin-bottom: 16px;
+    resize: none;
+    line-height: 1.6;
+}
+
+/* ---------- Buttons ----------
+   One animation for every button: a colour layer slides in from the left on hover.
+   Secondary buttons stay dark and slide in deep purple; primary buttons are violet-to-pink
+   and slide in a deeper shade, so a primary and its neighbour never look alike. */
+.ct-btn,
+.ct-opt,
+.ct-tabs button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 12px;
+    border: 1px solid var(--ct-line);
+    background: var(--bg, var(--ct-field));
+    color: var(--ct-ink);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.25s, border-color 0.25s, box-shadow 0.3s, opacity 0.2s;
+}
+
+.ct-btn::before,
+.ct-opt::before,
+.ct-tabs button::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--fill, linear-gradient(135deg, #4c1d95, #5b21b6));
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.4s var(--ct-ease);
+}
+
+.ct-btn:hover:not(:disabled):not([aria-disabled="true"]),
+.ct-opt:hover,
+.ct-tabs button:hover,
+.ct-tabs button[aria-pressed="true"] {
+    color: #fff;
+    border-color: var(--ct-deep);
+}
+
+.ct-btn:hover:not(:disabled):not([aria-disabled="true"])::before,
+.ct-opt:hover::before,
+.ct-tabs button:hover::before,
+.ct-tabs button[aria-pressed="true"]::before {
+    transform: scaleX(1);
+    transform-origin: left center;
+}
+
+.ct-btn:disabled,
+.ct-btn[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.ct-btn--pri {
+    --bg: linear-gradient(135deg, #c026d3, #ec4899);
+    --fill: linear-gradient(135deg, #86198f, #be185d);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 10px 22px -12px #ec4899;
+}
+
+.ct-btn--pri:hover:not(:disabled):not([aria-disabled="true"]) {
+    border-color: #be185d;
+    box-shadow: 0 12px 26px -10px #be185d;
+}
+
+/* Destructive action: dark at rest, slides to red on hover */
+.ct-btn--danger {
+    --fill: linear-gradient(135deg, #9f1239, #e11d48);
+}
+
+.ct-btn--danger:hover:not(:disabled):not([aria-disabled="true"]) {
+    border-color: #e11d48;
+    box-shadow: 0 12px 26px -12px #e11d48;
+}
+
+/* Copied: solid purple with a tick, no slide */
+.ct-btn.is-done,
+.ct-btn.is-done:hover:not(:disabled):not([aria-disabled="true"]) {
+    --bg: var(--ct-deep);
+    color: #fff;
+    border-color: transparent;
+}
+
+.ct-btn.is-done::before {
+    transform: scaleX(0) !important;
+}
+
+.ct-sendrow .ct-btn {
+    width: 100%;
+    height: 48px;
+    font-size: 15px;
+}
+
+/* ---------- Sreevi composer ---------- */
+.ct-sv {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.ct-comp {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 4px 8px 4px 14px;
+    border-radius: 12px;
+    background: var(--ct-field);
+    border: 1px solid var(--ct-line);
+    transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.ct-comp:focus-within {
+    border-color: var(--ct-p1);
+    box-shadow: 0 0 0 3px var(--ct-glow);
+}
+
+.ct-comp.is-bad,
+.ct-comp.is-bad:focus-within {
+    border-color: var(--ct-bad);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ct-bad) 20%, transparent);
+}
+
+.ct-comp:has(textarea:disabled) {
+    opacity: 0.6;
+}
+
+.ct-comp>svg {
+    color: var(--ct-p1);
+    margin: 0 0 11px;
+}
+
+.ct-scope .ct-comp textarea,
+.ct-scope .ct-comp textarea:focus {
+    flex: 1;
+    min-width: 0;
+    min-height: 40px;
+    max-height: 106px;
+    height: 40px;
+    margin: 0;
+    padding: 9px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    resize: none;
+    overflow-y: hidden;
+    line-height: 22px;
+    opacity: 1;
+}
+
+.ct-gen {
+    height: 48px;
+    min-width: 136px;
+    flex: none;
+}
+
+/* Stop: soft red pill with a small spinning ring around the stop square, so it reads as "working" */
+.ct-stop {
+    --bg: color-mix(in srgb, var(--ct-bad) 10%, var(--ct-field));
+    --fill: linear-gradient(135deg, #9f1239, #e11d48);
+    color: #fb7185;
+    border-color: color-mix(in srgb, var(--ct-bad) 45%, transparent);
+}
+
+.ct-stop:hover:not(:disabled) {
+    border-color: #e11d48;
+    box-shadow: 0 12px 26px -12px #e11d48;
+}
+
+.ct-stop-ic {
+    position: relative;
+    isolation: isolate;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+}
+
+.ct-stop-ic::before,
+.ct-stop-ic::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+}
+
+.ct-stop-ic::before {
+    inset: 0;
+    z-index: -2;
+    background: conic-gradient(from var(--ct-o), transparent 0 25%, currentColor);
+    animation: ct-orb 1.1s linear infinite;
+}
+
+.ct-stop-ic::after {
+    inset: 2px;
+    z-index: -1;
+    background: color-mix(in srgb, var(--ct-bad) 10%, var(--ct-field));
+}
+
+.ct-stop:hover .ct-stop-ic::after {
+    background: #be123c;
+}
+
+.ct-svnote {
+    margin: 10px 4px 18px;
+    font-size: 12.5px;
+    color: var(--ct-muted);
+}
+
+.ct-svnote.is-bad {
+    color: var(--ct-bad);
+    font-weight: 600;
+}
+
+/* ---------- Email card ---------- */
+.ct-ch {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 330px;
+    padding: 28px;
+    border-radius: 28px;
+    background: linear-gradient(160deg, var(--ct-card) 40%, var(--ct-chip));
+    border: 1px solid var(--ct-line);
+    box-shadow: 0 24px 56px -36px var(--ct-glow);
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    animation: ct-rise 0.7s var(--ct-ease) 0.1s both;
+}
+
+.ct-ch.is-open {
+    border-color: var(--ct-p1);
+    box-shadow: 0 28px 60px -28px var(--ct-p2);
+}
+
+.ct-ch-hd {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.ct-ic {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    flex: none;
+    color: #fff;
+    background: var(--ct-btn);
+}
+
+.ct-ch.is-open .ct-ic {
+    animation: ct-tilt 0.7s var(--ct-ease) forwards;
+}
+
+@keyframes ct-tilt {
+    0% {
+        transform: rotate(0);
+    }
+
+    30% {
+        transform: rotate(-16deg) scale(1.1);
+    }
+
+    60% {
+        transform: rotate(8deg) scale(1.1);
+    }
+
+    100% {
+        transform: rotate(-8deg) scale(1.08);
+    }
+}
+
+.ct-ch-hd h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.ct-ch-hd small {
+    display: block;
+    color: var(--ct-muted);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* Copy button: dark at rest, fills violet on hover with one soft shine passing across. */
+.ct-copy {
+    --bg: var(--ct-card);
+    --fill: var(--ct-btn);
+    flex: none;
+    margin-left: auto;
+    height: 34px;
+    padding: 0 13px;
+    font-size: 12.5px;
+}
+
+.ct-copy:hover:not(:disabled):not([aria-disabled="true"]) {
+    border-color: var(--ct-btn);
+}
+
+.ct-copy::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.28) 50%, transparent 80%);
+    transform: translateX(-130%);
+}
+
+.ct-copy:hover:not(:disabled):not([aria-disabled="true"])::after {
+    transform: translateX(230%);
+    transition: transform 0.7s var(--ct-ease);
+}
+
+.ct-tag {
+    position: relative;
+    z-index: 1;
+    margin: 30px 0 8px;
+    max-width: 14ch;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+.ct-sub {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: 36ch;
+    color: var(--ct-muted);
+}
+
+.ct-slot {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-top: 20px;
+    min-height: 120px;
+}
+
+.ct-hint,
+.ct-opts {
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.ct-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ct-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.ct-hint svg {
+    color: var(--ct-p1);
+}
+
+.ct-opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+}
+
+.ct-ch.is-open .ct-hint {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+.ct-ch.is-open .ct-opts {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+.ct-lbl {
+    flex-basis: 100%;
+    font-size: 13px;
+    color: var(--ct-muted);
+}
+
+.ct-opt {
+    --bg: var(--ct-card);
+    height: 36px;
+    padding: 0 15px;
+    border-radius: 99px;
+    font-size: 13.5px;
+}
+
+/* The one decorative moment: a rotating orb with a pink ripple. It grows when the card opens. */
+.ct-ch::after {
+    content: "";
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    right: -95px;
+    top: -95px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(from var(--ct-o), #7c3aed, #c026d3, #ec4899, #f472b6, #a855f7, #7c3aed);
+    opacity: 0.85;
+    animation: ct-orb 10s linear infinite, ct-ripple 3.8s ease-out infinite;
+    transition: scale 0.6s var(--ct-ease);
+}
+
+@keyframes ct-orb {
+    to {
+        --ct-o: 360deg;
+    }
+}
+
+@keyframes ct-ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.3), 0 0 0 0 rgba(168, 85, 247, 0.22);
+    }
+
+    100% {
+        box-shadow: 0 0 0 40px rgba(236, 72, 153, 0), 0 0 0 80px rgba(168, 85, 247, 0);
+    }
+}
+
+.ct-ch.is-open::after {
+    scale: 1.12;
+    animation-duration: 4s, 2.2s;
+}
+
+/* Glowing edge that travels around the open card */
+.ct-ch::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s;
+    background: conic-gradient(from var(--ct-a), transparent 0 55%, var(--ct-p1), var(--ct-pink), transparent 95%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+@keyframes ct-edge {
+    to {
+        --ct-a: 360deg;
+    }
+}
+
+.ct-ch.is-open::before {
+    opacity: 1;
+    animation: ct-edge 3.5s linear infinite;
+}
+
+/* ---------- Resume card ---------- */
+.ct-resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 18px 22px;
+    border-radius: 24px;
+    background: var(--ct-card);
+    border: 1px solid var(--ct-line);
+    animation: ct-rise 0.7s var(--ct-ease) 0.05s both;
+}
+
+.ct-resume small {
+    color: var(--ct-muted);
+    font-size: 13px;
+}
+
+.ct-qlabel {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.ct-qrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* ---------- Modal ---------- */
+.ct-ov {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(10, 8, 25, 0.62);
+    backdrop-filter: blur(6px);
+    animation: ct-fade 0.25s ease-out;
+}
+
+@keyframes ct-fade {
+    from {
+        opacity: 0;
+    }
+}
+
+.ct-md {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: calc(100dvh - 40px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 28px;
+    background: var(--ct-card);
+    border: 1px solid var(--ct-line);
+    box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.8);
+    animation: ct-modal 0.35s var(--ct-ease);
+}
+
+.ct-md::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    z-index: 2;
+    background: linear-gradient(90deg, var(--ct-p1), var(--ct-pink));
+}
+
+@keyframes ct-modal {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+}
+
+.ct-mscroll {
+    overflow: auto;
+    margin: 14px 8px 14px 0;
+    padding: 14px 18px 14px 28px;
+}
+
+.ct-mh {
+    display: grid;
+    gap: 2px;
+    margin-bottom: 18px;
+    padding-right: 48px;
+}
+
+.ct-mh h3 {
+    margin: 0;
+    font-size: 21px;
+    letter-spacing: -0.02em;
+}
+
+.ct-mh small {
+    color: var(--ct-muted);
+    overflow-wrap: anywhere;
+}
+
+/* Close button: plain disc. On hover it turns white with a purple cross and a quarter turn. */
+.ct-scope .ct-x {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 3;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    padding: 0;
+    color: #fff;
+    border: 0;
+    background: #0b0b14;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    will-change: rotate, scale;
+    transition: rotate 0.2s ease-out, scale 0.15s ease-out, background-color 0.1s, color 0.1s, opacity 0.2s, transform 0.2s;
+}
+
+.ct-scope .ct-x:hover {
+    rotate: 90deg;
+    scale: 1.1;
+    background: #fff;
+    color: var(--ct-deep);
+}
+
+.ct-scope .ct-x:active {
+    scale: 0.92;
+}
+
+.ct-scope .ct-x.is-hide {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+.ct-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.ct-tabs button {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 99px;
+    font-size: 13px;
+}
+
+.ct-aibox {
+    padding: 16px 16px 14px;
+    border-radius: 20px;
+    background: var(--ct-chip);
+    margin-bottom: 18px;
+}
+
+.ct-aibox label {
+    margin: 0 0 10px 4px;
+}
+
+.ct-aibox .ct-comp {
+    background: var(--ct-card);
+}
+
+.ct-aibox .ct-svnote {
+    margin: 10px 4px 0;
+}
+
+.ct-acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ct-acts .ct-btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+/* ---------- Confirm sheet (inside the modal) ---------- */
+.ct-cf {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: color-mix(in srgb, #07060f 62%, transparent);
+    backdrop-filter: blur(4px);
+    animation: ct-fade 0.2s ease-out;
+}
+
+.ct-cf-card {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 380px;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 30px 22px 22px;
+    text-align: center;
+    border-radius: 24px;
+    background: var(--ct-card);
+    border: 1px solid var(--ct-line);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--ct-glow);
+    animation: ct-pop 0.35s var(--ct-ease);
+}
+
+.ct-cf-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ct-p1), var(--ct-pink));
+}
+
+@keyframes ct-pop {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+    }
+}
+
+/* Icon inside a gradient ring. "busy" spins (still working); "glow" pulses (something worth keeping). */
+.ct-cf-ic {
+    position: relative;
+    isolation: isolate;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--ct-p1);
+}
+
+.ct-cf-ic::before,
+.ct-cf-ic::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+}
+
+.ct-cf-ic::before {
+    inset: 0;
+    z-index: -2;
+    background: conic-gradient(from var(--ct-o), transparent 0 30%, var(--ct-p1), var(--ct-pink));
+}
+
+.ct-cf-ic::after {
+    inset: 3px;
+    z-index: -1;
+    background: var(--ct-card);
+}
+
+.ct-cf-ic.is-busy::before {
+    animation: ct-orb 1.6s linear infinite;
+}
+
+.ct-cf-ic.is-glow::before {
+    background: conic-gradient(from 200deg, var(--ct-p1), var(--ct-pink), var(--ct-p1));
+    animation: ct-glow 2s ease-in-out infinite;
+}
+
+@keyframes ct-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 0 9px rgba(236, 72, 153, 0);
+    }
+}
+
+.ct-cf-card h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.ct-cf-card p {
+    margin: 0 0 16px;
+    max-width: 34ch;
+    font-size: 13.5px;
+    color: var(--ct-muted);
+}
+
+.ct-cf-acts {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+
+    .ct-hero,
+    .ct-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ct-hero {
+        padding-top: 24px;
+    }
+}
+
+@media (max-width: 560px) {
+    .ct-page {
+        padding: 0 16px 48px;
+    }
+
+    .ct-card {
+        padding: 22px;
+        border-radius: 22px;
+    }
+
+    .ct-ch {
+        padding: 22px;
+        border-radius: 22px;
+    }
+
+    .ct-f2 {
+        grid-template-columns: 1fr;
+    }
+
+    .ct-sv {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ct-mscroll {
+        padding: 14px 12px 14px 18px;
+    }
+
+    .ct-acts .ct-btn {
+        flex-basis: 100%;
+    }
+
+    .ct-qrow,
+    .ct-qrow .ct-btn {
+        width: 100%;
+    }
+
+    .ct-qrow .ct-btn {
+        flex: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ct-scope *,
+    .ct-scope *::before,
+    .ct-scope *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}

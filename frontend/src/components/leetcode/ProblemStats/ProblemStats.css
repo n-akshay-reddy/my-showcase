@@ -1,0 +1,694 @@
+/* =========================================================
+   ProblemStats.css
+   Theme-aware (light-mode / dark-mode), same brand as the
+   other LeetCode cards: pink → purple, Inter, soft glows.
+
+   The JSX passes each level's colour as --c on .ps-card.
+   Tints, borders and text colours are all DERIVED from --c
+   with color-mix(), so one set of rules works in both themes.
+   ========================================================= */
+
+/* 1. THEME TOKENS ----------------------------------------- */
+
+:root {
+    --ps-bg: #ffffff;
+    --ps-border: #e8eaf4;
+    --ps-text: #1c2033;
+    --ps-muted: #7a839b;
+    --ps-surface: #f6f7fc;
+    --ps-track: #eceef8;
+    --ps-pop-bg: #ffffff;
+
+    --ps-shadow: 0 10px 34px rgba(100, 60, 200, 0.10);
+    --ps-pop-shadow: 0 20px 44px -12px rgba(60, 50, 120, 0.30), 0 4px 12px rgba(60, 50, 120, 0.08);
+
+    --ps-purple: #8b5cf6;
+    --ps-brand: linear-gradient(135deg, #d946ef 0%, #8b5cf6 100%);
+
+    --ps-sk-base: #eef0f8;
+    --ps-sk-shine: rgba(255, 255, 255, 0.75);
+
+    /* level text: the level colour darkened for light backgrounds */
+    --ps-level-mix: #1c2033;
+}
+
+:root[data-theme="light-mode"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark-mode"] {
+    color-scheme: dark;
+
+    --ps-bg: #151823;
+    --ps-border: rgba(255, 255, 255, 0.08);
+    --ps-text: #f3f5fb;
+    --ps-muted: #98a1b8;
+    --ps-surface: #1d2232;
+    --ps-track: #252b3d;
+    --ps-pop-bg: #1d2232;
+
+    --ps-shadow: 0 10px 34px rgba(0, 0, 0, 0.40);
+    --ps-pop-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    --ps-sk-base: #212637;
+    --ps-sk-shine: rgba(255, 255, 255, 0.08);
+
+    /* in dark mode the level colour is mixed toward white instead */
+    --ps-level-mix: #ffffff;
+}
+
+
+/* 2. CARD -------------------------------------------------- */
+
+.ps {
+    /* sits above what renders after it, so popups can overlap it */
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    margin: 0;
+    padding: 20px 22px 22px;
+    box-sizing: border-box;
+
+    color: var(--ps-text);
+    font-family: "Inter", "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+
+    /* brand line = first background layer, so it is clipped to the
+       rounded corners (overflow stays visible for the popups) */
+    background:
+        linear-gradient(90deg, #d946ef, #8b5cf6) top / 100% 3px no-repeat,
+        radial-gradient(circle at 0% 0%, rgba(217, 70, 239, 0.08), transparent 45%),
+        radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.07), transparent 40%),
+        var(--ps-bg);
+    border: 1px solid var(--ps-border);
+    border-radius: 20px;
+    box-shadow: var(--ps-shadow);
+
+    transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease;
+}
+
+.ps *,
+.ps *::before,
+.ps *::after {
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.ps h2,
+.ps h3,
+.ps p,
+.ps dl,
+.ps dd {
+    margin: 0;
+}
+
+.ps-muted {
+    font-size: 12px;
+    color: var(--ps-muted);
+}
+
+.ps-xs {
+    font-size: 10.5px;
+}
+
+
+/* 3. HEADER ------------------------------------------------ */
+
+.ps-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-bottom: 18px;
+}
+
+.ps-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.ps-title h2 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+}
+
+.ps-title-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 38px;
+    height: 38px;
+    background: var(--ps-brand);
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+}
+
+.ps-title-icon svg {
+    width: 19px;
+    height: 19px;
+}
+
+
+/* stat chips */
+
+.ps-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ps-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 13px 6px 6px;
+    background: var(--ps-surface);
+    border: 1px solid var(--ps-border);
+    border-radius: 12px;
+}
+
+.ps-chip-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    color: var(--ps-purple);
+    background: color-mix(in srgb, var(--ps-purple) 14%, transparent);
+    border-radius: 9px;
+}
+
+.ps-chip-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.ps-pct {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.ps-chip-label {
+    font-size: 10.5px;
+    line-height: 1.2;
+    color: var(--ps-muted);
+}
+
+.ps-chip-value {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 1px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.ps-chip-value small {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--ps-muted);
+}
+
+
+/* 4. BODY + RING ------------------------------------------- */
+
+.ps-body {
+    display: grid;
+    grid-template-columns: 184px minmax(0, 1fr);
+    gap: 22px;
+    align-items: center;
+}
+
+.ps-ring {
+    position: relative;
+    width: 184px;
+    height: 184px;
+    justify-self: center;
+}
+
+.ps-ring svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* the JSX hardcodes the track colour as an attribute; CSS overrides it */
+.ps-ring circle:not(.ps-arc) {
+    stroke: var(--ps-track);
+}
+
+.ps-ring-g {
+    cursor: pointer;
+    transition: opacity 200ms ease;
+}
+
+.ps-arc {
+    transition: stroke-dashoffset 1s cubic-bezier(0.22, 0.8, 0.25, 1);
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.12));
+}
+
+.ps-ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.ps-ring-center strong {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.9px;
+    line-height: 1;
+    background: var(--ps-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.ps-ring-center span {
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ps-muted);
+}
+
+
+/* 5. DIFFICULTY CARDS -------------------------------------- */
+
+.ps-levels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.ps-card {
+    /* text colour for this level (derived from --c set by the JSX) */
+    --lvl-text: color-mix(in srgb, var(--c) 72%, var(--ps-level-mix));
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 184px;
+    padding: 16px;
+
+    background: color-mix(in srgb, var(--c) 7%, var(--ps-bg));
+    border: 1px solid color-mix(in srgb, var(--c) 22%, var(--ps-border));
+    border-radius: 16px;
+    outline: none;
+    cursor: pointer;
+
+    transition: border-color 200ms ease, box-shadow 200ms ease,
+        transform 200ms ease, background-color 250ms ease;
+}
+
+.ps-card[data-active="true"],
+.ps-card:focus-visible {
+    z-index: 30;
+    transform: translateY(-2px);
+    border-color: var(--c);
+    box-shadow: 0 10px 24px -10px var(--c);
+}
+
+.ps-card:focus-visible {
+    outline: 2px solid var(--ps-purple);
+    outline-offset: 3px;
+}
+
+.ps-card-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.ps-card-head h3 {
+    font-size: 15px;
+    font-weight: 650;
+}
+
+.ps-dot-wrap {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    background: color-mix(in srgb, var(--c) 18%, transparent);
+    border-radius: 50%;
+}
+
+.ps-dot {
+    width: 13px;
+    height: 13px;
+    background: var(--c);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent);
+}
+
+.ps-count {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-top: 13px;
+    white-space: nowrap;
+}
+
+.ps-count strong {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.9px;
+    line-height: 1;
+}
+
+.ps-count span {
+    font-size: 12px;
+    color: var(--ps-muted);
+}
+
+.ps-card > .ps-muted {
+    margin-top: 4px;
+}
+
+
+/* beats row */
+
+.ps-beats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px dashed color-mix(in srgb, var(--c) 30%, var(--ps-border));
+    color: var(--lvl-text);
+}
+
+.ps-beats-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    background: var(--ps-bg);
+    border: 1px solid color-mix(in srgb, var(--c) 20%, var(--ps-border));
+    border-radius: 50%;
+}
+
+.ps-beats-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.ps-beats-line {
+    font-size: 12px;
+    white-space: nowrap;
+    color: var(--ps-muted);
+}
+
+.ps-beats-line strong {
+    font-size: 13px;
+    font-weight: 750;
+    color: var(--lvl-text);
+}
+
+.ps-beats .ps-muted {
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+
+/* 6. POPUP ------------------------------------------------- */
+
+.ps-pop {
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 12px);
+    left: 50%;
+
+    width: min(236px, calc(100vw - 40px));
+    padding: 13px 14px 15px;
+
+    background: var(--ps-pop-bg);
+    border: 1px solid color-mix(in srgb, var(--c) 35%, var(--ps-border));
+    border-radius: 14px;
+    box-shadow: var(--ps-pop-shadow);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(calc(-50% + var(--shift, 0px)), -6px) scale(0.97);
+    transform-origin: top center;
+
+    transition: opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
+}
+
+.ps-pop[data-side="top"] {
+    top: auto;
+    bottom: calc(100% + 12px);
+    transform: translate(calc(-50% + var(--shift, 0px)), 6px) scale(0.97);
+    transform-origin: bottom center;
+}
+
+.ps-card[data-active="true"] .ps-pop,
+.ps-card:focus-visible .ps-pop {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(calc(-50% + var(--shift, 0px)), 0) scale(1);
+    transition: opacity 160ms ease, transform 160ms ease, visibility 0s;
+}
+
+/* arrow, kept centred on the card */
+.ps-pop::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: calc(50% - var(--shift, 0px));
+    width: 10px;
+    height: 10px;
+    background: var(--ps-pop-bg);
+    border-top: 1px solid color-mix(in srgb, var(--c) 35%, var(--ps-border));
+    border-left: 1px solid color-mix(in srgb, var(--c) 35%, var(--ps-border));
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.ps-pop[data-side="top"]::before {
+    top: auto;
+    bottom: -6px;
+    border-top: 0;
+    border-left: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--c) 35%, var(--ps-border));
+    border-right: 1px solid color-mix(in srgb, var(--c) 35%, var(--ps-border));
+}
+
+.ps-pop-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ps-pop-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ps-pop-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--c);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent);
+}
+
+.ps-pop-pct {
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 750;
+    color: var(--lvl-text);
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    border-radius: 999px;
+}
+
+.ps-pop-bar {
+    height: 6px;
+    margin-top: 10px;
+    overflow: hidden;
+    background: var(--ps-track);
+    border-radius: 999px;
+}
+
+.ps-pop-bar i {
+    display: block;
+    height: 100%;
+    background: var(--c);
+    border-radius: inherit;
+    transition: width 550ms cubic-bezier(0.22, 0.8, 0.25, 1) 50ms;
+}
+
+.ps-pop-sub {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--ps-muted);
+}
+
+.ps-pop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--ps-border);
+}
+
+.ps-pop-grid dt {
+    font-size: 10.5px;
+    color: var(--ps-muted);
+}
+
+.ps-pop-grid dd {
+    margin-top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+}
+
+
+/* 7. SKELETON ---------------------------------------------- */
+
+.ps-sk {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--ps-sk-base);
+    border-radius: 10px;
+}
+
+.ps-sk::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, var(--ps-sk-shine), transparent);
+    animation: ps-shimmer 1.3s infinite;
+}
+
+@keyframes ps-shimmer {
+    to { transform: translateX(100%); }
+}
+
+
+/* 8. RESPONSIVE -------------------------------------------- */
+
+@media (max-width: 950px) {
+    .ps {
+        width: calc(100% - 24px);
+        margin-inline: auto;
+    }
+
+    .ps-body {
+        grid-template-columns: 150px minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .ps-ring {
+        width: 150px;
+        height: 150px;
+    }
+
+    .ps-ring-center strong { font-size: 21px; }
+    .ps-count strong       { font-size: 25px; }
+    .ps-card               { padding: 12px; }
+}
+
+@media (max-width: 700px) {
+    .ps {
+        padding: 16px 14px 18px;
+        border-radius: 16px;
+    }
+
+    .ps-title h2 { font-size: 15px; }
+
+    .ps-chips { width: 100%; }
+    .ps-chip  { flex: 1 1 auto; }
+
+    .ps-body { grid-template-columns: 1fr; }
+
+    .ps-ring {
+        width: 164px;
+        height: 164px;
+    }
+
+    .ps-levels { grid-template-columns: 1fr; }
+
+    .ps-card {
+        min-height: 0;
+        padding: 14px;
+    }
+
+    .ps-beats      { margin-top: 14px; }
+    .ps-count strong { font-size: 28px; }
+}
+
+
+/* 9. REDUCED MOTION ---------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .ps-arc,
+    .ps-ring-g,
+    .ps-card,
+    .ps-pop,
+    .ps-pop-bar i {
+        transition: none;
+    }
+
+    .ps-sk::after {
+        animation: none;
+    }
+}
+
+/* Body: reduce unnecessary space around the chart */
+.ps-body {
+    display: grid;
+    grid-template-columns: 172px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+    min-width: 0;
+}
+
+/* Slightly smaller chart gives the difficulty cards more room */
+.ps-ring {
+    position: relative;
+    width: 172px;
+    height: 172px;
+    justify-self: center;
+}
+
+/* Keep all three difficulty cards aligned */
+.ps-levels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    min-width: 0;
+}
+
+/* Prevent card content from forcing columns wider */
+.ps-card {
+    min-width: 0;
+    padding: 14px;
+}
+

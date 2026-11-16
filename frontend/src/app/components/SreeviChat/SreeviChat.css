@@ -298,3 +298,45 @@
     background: linear-gradient(135deg, #7c5cff, #d946ef);
 }
 .sv-msg__link:hover { filter: brightness(1.1); }
+
+/* ---------- task checklist (live steps) ---------- */
+.sv-tasks { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.sv-task { display: flex; align-items: flex-start; gap: 9px; font-size: 0.85rem; }
+.sv-task__icon { flex: none; width: 16px; height: 16px; margin-top: 2px; display: grid; place-items: center; color: var(--sv-muted); }
+.sv-task__body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.sv-task__note { font-size: 0.78rem; color: var(--sv-muted); }
+.sv-task--pending .sv-task__text { color: var(--sv-muted); }
+.sv-task--running .sv-task__icon { color: var(--sv-accent); }
+.sv-task--done .sv-task__icon { color: var(--sv-ok); }
+.sv-task--skipped .sv-task__text { color: var(--sv-muted); }
+.sv-task--failed .sv-task__icon { color: #f87171; }
+
+.sv-steps { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.sv-step { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: var(--sv-muted); }
+.sv-step--running .sv-task__icon { color: var(--sv-accent); }
+.sv-step--done .sv-task__icon { color: var(--sv-ok); }
+.sv-step--failed { color: #f87171; }
+.sv-step--failed .sv-task__icon { color: #f87171; }
+
+.sv-turn__error { margin-top: 10px; font-size: 0.84rem; color: #f87171; }
+
+.sv-steps-btn {
+  margin-top: 10px;
+  padding: 5px 11px;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--sv-muted);
+  background: var(--sv-surface);
+  border: 1px solid var(--sv-line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.sv-steps-btn:hover { border-color: var(--sv-accent); color: var(--sv-text); }
+
+/* stop button replaces send while Sreevi is working */
+.sv-chat .sv-chat__send.is-stop {
+  color: var(--sv-text);
+  background: var(--sv-surface-2);
+  box-shadow: none;
+}

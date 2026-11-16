@@ -1,0 +1,53 @@
+/* Company card on the Experience page */
+/* The timeline dot now lives in Experience.css (.exp-dot), so the old ::before dot and the card's margin-bottom are gone. */
+.exp-company { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 310px; column-gap: 48px; width: 100%; text-align: left; color: inherit; cursor: pointer; background: linear-gradient(135deg, color-mix(in srgb, var(--g1) 6%, var(--card)), var(--card) 42%, color-mix(in srgb, var(--g3) 7%, var(--card))); border: 1px solid var(--line); border-radius: 22px; padding: 38px 38px 34px; transition: border-color .25s, transform .25s cubic-bezier(.2, .8, .25, 1), box-shadow .25s; animation: exp-rise .6s cubic-bezier(.2, .8, .25, 1) backwards; }
+@keyframes exp-rise { from { opacity: 0; transform: translateY(16px); } }
+.exp-company::after { content: ""; position: absolute; left: 22px; right: 22px; top: -1px; height: 3px; border-radius: 0 0 4px 4px; background: linear-gradient(90deg, transparent, var(--g3) 18%, var(--g2) 62%, var(--g1) 88%, transparent); }
+.exp-company:hover { border-color: color-mix(in srgb, var(--ink) 30%, var(--line)); transform: translateY(-2px); box-shadow: var(--sh); }
+.exp-company:hover .exp-mono { transform: scale(1.06) rotate(-3deg); }
+.exp-company-left { display: flex; flex-direction: column; min-width: 0; }
+.exp-company-head { display: flex; gap: 20px; align-items: center; }
+.exp-company-head .exp-mono { align-self: start; }
+.exp-company-info { min-width: 0; display: flex; flex-direction: column; }
+.exp-period { display: block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--mut); letter-spacing: .01em; }
+.exp-period i { font-style: normal; margin: 0 6px; opacity: .5; }
+.exp-company h2 { font-size: 28px; letter-spacing: -.035em; margin: 0; line-height: 1.15; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.exp-live { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: .02em; padding: 3px 10px; border-radius: 99px; background: color-mix(in srgb, var(--g2) 12%, var(--card)); color: color-mix(in srgb, var(--g2) 78%, var(--ink)); }
+.exp-live i { width: 6px; height: 6px; border-radius: 50%; background: var(--g2); animation: exp-pulse 2s infinite; }
+@keyframes exp-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--g2) 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 7px transparent; } }
+.exp-role { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
+.exp-summary { margin: 26px 0 0; color: var(--mut); font-size: 15px; line-height: 1.7; max-width: 560px; }
+.exp-company .exp-chips { margin-top: auto; padding-top: 24px; gap: 8px; }
+
+/* top highlights on the company card */
+.exp-highlights { display: flex; flex-direction: column; border-left: 1px solid var(--line); padding-left: 40px; min-width: 0; }
+.exp-highlights-title { font-size: 11.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--mut); margin-bottom: 8px; }
+.exp-highlight { display: flex; gap: 12px; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; font-weight: 600; line-height: 1.4; letter-spacing: -.01em; transition: transform .25s cubic-bezier(.2, .8, .25, 1); }
+.exp-highlight::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, var(--g2), var(--g3)); transform: translateY(-2px); transition: transform .25s; }
+.exp-company:hover .exp-highlight { transform: translateX(4px); }
+.exp-company:hover .exp-highlight:nth-of-type(2) { transition-delay: .04s; }
+.exp-company:hover .exp-highlight:nth-of-type(3) { transition-delay: .08s; }
+.exp-company:hover .exp-highlight:nth-of-type(4) { transition-delay: .12s; }
+.exp-company:hover .exp-highlight:nth-of-type(5) { transition-delay: .16s; }
+.exp-company:hover .exp-highlight::before { transform: translateY(-2px) scale(1.5); }
+.exp-highlights .exp-highlight:last-of-type { margin-bottom: 26px; }
+/* "View my work": a plain arrow link, since the whole card is clickable */
+.exp-view { position: relative; display: inline-flex; align-items: center; gap: 6px; padding-bottom: 4px; font-size: 14.5px; font-weight: 700; color: var(--g3); white-space: nowrap; }
+.exp-view::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--g2), var(--g3)); transform: scaleX(.2); transform-origin: left; transition: transform .35s cubic-bezier(.2, .8, .25, 1); }
+.exp-view svg { width: 17px; height: 17px; transition: transform .25s cubic-bezier(.2, .8, .25, 1); }
+.exp-company:hover .exp-view::after { transform: scaleX(1); }
+.exp-company:hover .exp-view svg { transform: translateX(5px); }
+.exp-highlights .exp-view { margin-top: auto; align-self: flex-start; }
+
+
+@media (max-width: 860px) {
+  .exp-company { grid-template-columns: 1fr; row-gap: 28px; padding: 30px 26px 28px; }
+  .exp-highlights { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 22px; }
+  .exp-highlights .exp-view { margin-top: 0; }
+}
+@media (max-width: 760px) {
+  .exp-company-head { gap: 14px; }
+  .exp-summary { margin-top: 20px; }
+  .exp-company { padding: 22px 20px 20px; }
+  .exp-company h2 { font-size: 23px; }
+}

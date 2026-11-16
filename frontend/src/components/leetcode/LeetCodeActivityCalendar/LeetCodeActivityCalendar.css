@@ -1,0 +1,914 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* =========================================================
+   LeetCodeActivityCalendar.css
+   Theme-aware (light-mode / dark-mode), same brand as
+   TopSkills + ViewOtherLeetCodeStats: pink → purple.
+
+   KEEP IN SYNC WITH THE JSX:
+   DAY_GAP = 4px, MONTH_GAP = 14px
+   (the JS uses them to compute the box size)
+   ========================================================= */
+
+/* 1. THEME TOKENS ----------------------------------------- */
+
+:root {
+    --calendar-max-width: 1100px;
+
+    --ac-bg: #ffffff;
+    --ac-border: #e8eaf4;
+    --ac-text: #1c2033;
+    --ac-muted: #7a839b;
+    --ac-strong: #3a4160;
+    --ac-shadow: 0 10px 34px rgba(100, 60, 200, 0.10);
+
+    --ac-control-bg: #f6f7fc;
+    --ac-control-hover: #eef0fa;
+    --ac-control-border: #e3e6f2;
+    --ac-menu-bg: #ffffff;
+    --ac-menu-shadow: 0 16px 40px rgba(60, 50, 120, 0.18);
+    --ac-scrollbar: #d3d7e6;
+
+    --ac-purple: #8b5cf6;
+    --ac-brand: linear-gradient(135deg, #d946ef 0%, #8b5cf6 100%);
+
+    /* activity scale: empty → very active */
+    /* Empty day — neutral, clearly inactive */
+--ac-level-0: #b5b7c2;
+
+/* Low activity — visible pink */
+--ac-level-1: #f9a8d4;
+
+/* Moderate activity — bright pink */
+--ac-level-2: #e879f9;
+
+/* Good activity — magenta-purple */
+--ac-level-3: #c026d3;
+
+/* High activity — vivid purple */
+--ac-level-4: #9333ea;
+
+/* Very high activity — deep, saturated purple */
+--ac-level-5: #6d28d9;
+
+    --ac-shimmer-base: #eef0f8;
+    --ac-shimmer-shine: rgba(255, 255, 255, 0.7);
+}
+
+:root[data-theme="light-mode"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark-mode"] {
+    color-scheme: dark;
+
+    --ac-bg: #151823;
+    --ac-border: rgba(255, 255, 255, 0.08);
+    --ac-text: #f3f5fb;
+    --ac-muted: #98a1b8;
+    --ac-strong: #d6dbea;
+    --ac-shadow: 0 10px 34px rgba(0, 0, 0, 0.40);
+
+    --ac-control-bg: #1f2434;
+    --ac-control-hover: #262c40;
+    --ac-control-border: rgba(255, 255, 255, 0.09);
+    --ac-menu-bg: #1d2232;
+    --ac-menu-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    --ac-scrollbar: #3d4558;
+
+    /* Empty day */
+--ac-level-0: #2e3342;
+
+/* Low activity */
+--ac-level-1: #663052;
+
+/* Moderate activity */
+--ac-level-2: #a83291;
+
+/* Good activity */
+--ac-level-3: #c04bd8;
+
+/* High activity */
+--ac-level-4: #c084fc;
+
+/* Very high activity */
+--ac-level-5: #e879f9;
+
+    --ac-shimmer-base: #212637;
+    --ac-shimmer-shine: rgba(255, 255, 255, 0.08);
+}
+
+
+/* 2. CARD -------------------------------------------------- */
+
+.activity-calendar,
+.leetcode-shimmer-calendar {
+    font-family: 'Inter', 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    width: 100%;
+    max-width: var(--calendar-max-width);
+    box-sizing: border-box;
+}
+
+.activity-calendar {
+    position: relative;
+    padding: 22px 22px 14px;
+    overflow: visible;
+    color: var(--ac-text);
+
+    /* The brand line is the first background layer, so the browser clips it
+       to the rounded corners (overflow stays visible for the year dropdown). */
+    background:
+        linear-gradient(90deg, #d946ef, #8b5cf6) top / 100% 3px no-repeat,
+        radial-gradient(circle at 0% 0%, rgba(217, 70, 239, 0.08), transparent 45%),
+        radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.07), transparent 40%),
+        var(--ac-bg);
+    border: 1px solid var(--ac-border);
+    border-radius: 20px;
+    box-shadow: var(--ac-shadow);
+
+    transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease;
+}
+
+
+/* 3. HEADER ------------------------------------------------ */
+
+.activity-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+.activity-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    color: var(--ac-text);
+}
+
+.activity-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.activity-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    color: var(--ac-muted);
+}
+
+.activity-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 12px;
+    background: var(--ac-control-bg);
+    border: 1px solid var(--ac-control-border);
+    border-radius: 10px;
+}
+
+.activity-stats strong {
+    font-weight: 700;
+    color: var(--ac-purple);
+}
+
+
+/* 4. CALENDAR GRID ----------------------------------------- */
+
+/* No horizontal padding here: the JS measures clientWidth. */
+.calendar-container {
+    --cell: 14px;                 /* overridden by JS */
+    width: 100%;
+    min-height: 150px;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--ac-scrollbar) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--ac-scrollbar);
+    border-radius: 999px;
+}
+
+.calendar-months {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;                    /* = MONTH_GAP */
+    width: max-content;
+}
+
+.calendar-month {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.month-label {
+    width: 100%;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--ac-muted);
+}
+
+.month-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;                     /* = DAY_GAP */
+}
+
+.calendar-week {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 4px;                     /* = DAY_GAP */
+}
+
+
+/* 5. DAYS + ACTIVITY LEVELS -------------------------------- */
+
+.calendar-day {
+    width: var(--cell);
+    height: var(--cell);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    background: var(--ac-level-0);
+    border-radius: 4px;
+    transition: box-shadow 150ms ease, filter 150ms ease, background-color 250ms ease;
+}
+
+.calendar-day.empty {
+    background: transparent;
+    pointer-events: none;
+}
+
+.activity-0 { background: var(--ac-level-0); }
+.activity-1 { background: var(--ac-level-1); }
+.activity-2 { background: var(--ac-level-2); }
+.activity-3 { background: var(--ac-level-3); }
+.activity-4 { background: var(--ac-level-4); }
+.activity-5 { background: var(--ac-level-5); }
+
+/* Ring + glow instead of scale: the scroll container would clip a scaled box. */
+.calendar-day:not(.empty):hover {
+    cursor: pointer;
+    filter: brightness(1.08);
+    box-shadow:
+        0 0 0 2px var(--ac-bg),
+        0 0 0 3.5px var(--ac-purple);
+}
+
+
+/* 6. YEAR DROPDOWN ----------------------------------------- */
+
+.activity-year-selector {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.activity-year-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 100px;
+    padding: 8px 12px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ac-text);
+
+    background: var(--ac-control-bg);
+    border: 1px solid var(--ac-control-border);
+    border-radius: 10px;
+    cursor: pointer;
+
+    transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.activity-year-button:hover {
+    background: var(--ac-control-hover);
+    border-color: color-mix(in srgb, var(--ac-purple) 45%, var(--ac-control-border));
+}
+
+.activity-year-button:focus-visible,
+.activity-year-option:focus-visible {
+    outline: 2px solid var(--ac-purple);
+    outline-offset: 2px;
+}
+
+.activity-year-arrow {
+    flex-shrink: 0;
+    color: var(--ac-muted);
+    transition: transform 200ms ease;
+}
+
+.activity-year-arrow.open {
+    transform: rotate(180deg);
+}
+
+.activity-year-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 100;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    min-width: 100%;
+    width: max-content;
+    height: auto;
+    /* 5 rows x 31px + 4 gaps x 2px + 10px padding + 2px border = 175px */
+    max-height: 175px;
+    padding: 5px;
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    background: var(--ac-menu-bg);
+    border: 1px solid var(--ac-border);
+    border-radius: 12px;
+    box-shadow: var(--ac-menu-shadow);
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--ac-scrollbar) transparent;
+    animation: ac-menu-in 160ms ease-out both;
+}
+
+.activity-year-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 14px;
+
+    width: 100%;
+    height: 31px;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: left;
+    color: var(--ac-muted);
+
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: background-color 140ms ease, color 140ms ease;
+}
+
+.activity-year-option:hover {
+    color: var(--ac-text);
+    background: var(--ac-control-hover);
+}
+
+.activity-year-option.selected {
+    font-weight: 700;
+    color: var(--ac-purple);
+    background: color-mix(in srgb, var(--ac-purple) 12%, transparent);
+}
+
+@keyframes ac-menu-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* 7. ERROR STATE (plain <p> + <button> in the JSX) ---------- */
+
+.activity-calendar > p {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ac-muted);
+}
+
+.activity-calendar > button {
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    color: #fff;
+    background: var(--ac-brand);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(168, 85, 247, 0.30);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.activity-calendar > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(168, 85, 247, 0.40);
+}
+
+
+/* 8. MOBILE (cell size + gaps are NOT overridden: JS owns them) */
+
+@media (max-width: 700px) {
+    .activity-calendar {
+        padding: 18px 16px 12px;
+        border-radius: 16px;
+    }
+
+    .activity-calendar-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .activity-header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .activity-title { font-size: 16px; }
+    .activity-stats { font-size: 11px; }
+    .activity-stats span { padding: 6px 10px; }
+
+    .month-label { height: 20px; font-size: 10px; }
+
+    .activity-year-button { padding: 7px 10px; font-size: 11px; }
+}
+
+
+/* 9. LOADING SHIMMER --------------------------------------- */
+
+.leetcode-shimmer-calendar {
+    padding: 22px 22px 14px;
+    background: var(--ac-bg);
+    border: 1px solid var(--ac-border);
+    border-radius: 20px;
+    box-shadow: var(--ac-shadow);
+}
+
+.leetcode-shimmer-title,
+.leetcode-shimmer-stat,
+.leetcode-shimmer-month-label,
+.leetcode-shimmer-day {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--ac-shimmer-base);
+}
+
+.leetcode-shimmer-title::after,
+.leetcode-shimmer-stat::after,
+.leetcode-shimmer-month-label::after,
+.leetcode-shimmer-day::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, var(--ac-shimmer-shine), transparent);
+    animation: ac-shimmer 1.5s infinite;
+}
+
+@keyframes ac-shimmer {
+    100% { transform: translateX(100%); }
+}
+
+.leetcode-shimmer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    min-height: 22px;
+    margin-bottom: 18px;
+}
+
+.leetcode-shimmer-title {
+    flex-shrink: 0;
+    width: 240px;
+    height: 20px;
+    border-radius: 6px;
+}
+
+.leetcode-shimmer-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.leetcode-shimmer-stat {
+    flex-shrink: 0;
+    width: 105px;
+    height: 30px;
+    border-radius: 10px;
+}
+
+.leetcode-shimmer-calendar-container {
+    width: 100%;
+    padding-bottom: 5px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.leetcode-shimmer-months {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: max-content;
+}
+
+.leetcode-shimmer-month {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.leetcode-shimmer-month-label {
+    width: 30px;
+    height: 12px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.leetcode-shimmer-month-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.leetcode-shimmer-week {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 4px;
+}
+
+.leetcode-shimmer-day {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+@media (max-width: 700px) {
+    .leetcode-shimmer-calendar { padding: 18px 16px 12px; border-radius: 16px; }
+
+    .leetcode-shimmer-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .leetcode-shimmer-title { width: 200px; height: 19px; }
+    .leetcode-shimmer-stats { flex-wrap: wrap; gap: 10px; }
+    .leetcode-shimmer-stat  { width: 90px; height: 26px; }
+
+    .leetcode-shimmer-months      { gap: 10px; }
+    .leetcode-shimmer-month-label { width: 26px; height: 10px; margin-bottom: 8px; }
+    .leetcode-shimmer-month-grid,
+    .leetcode-shimmer-week        { gap: 3px; }
+    .leetcode-shimmer-day         { width: 12px; height: 12px; border-radius: 3px; }
+}
+
+@media (max-width: 400px) {
+    .leetcode-shimmer-title  { width: 180px; }
+    .leetcode-shimmer-stats  { gap: 8px; }
+    .leetcode-shimmer-stat   { width: 82px; }
+    .leetcode-shimmer-months { gap: 8px; }
+}
+
+
+/* 10. REDUCED MOTION --------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .activity-calendar *,
+    .leetcode-shimmer-calendar * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+
+/* Active days — subtle visibility improvement */
+
+.activity-stats span {
+    gap: 4px;
+    padding: 7px 12px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    border-color: color-mix(
+        in srgb,
+        var(--ac-purple) 30%,
+        var(--ac-control-border)
+    );
+}
+
+.activity-stats strong {
+    min-width: auto;
+    min-height: auto;
+    padding: 0;
+
+    color: var(--ac-purple);
+    background: transparent;
+    border-radius: 0;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    box-shadow: none;
+}
+
+:root[data-theme="light-mode"] .activity-stats span {
+    color: #626b83;
+    background: #f7f4ff;
+    border-color: #e4d9ff;
+}
+
+:root[data-theme="light-mode"] .activity-stats strong {
+    color: #7c3aed;
+}
+
+:root[data-theme="dark-mode"] .activity-stats span {
+    color: #b9c1d4;
+    background: #1f2434;
+    border-color: #45405f;
+}
+
+:root[data-theme="dark-mode"] .activity-stats strong {
+    color: #c4b5fd;
+}
+
+/* ===== COMPACT CALENDAR ERROR ===== */
+
+/* ===== CALENDAR ERROR (flat split, larger) ===== */
+
+.cal-split {
+    --err: #f43f5e;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    column-gap: 32px;
+    box-sizing: border-box;
+    padding: 16px 12px 4px;
+    min-height: 260px;
+    background: none;
+    border: none;
+}
+
+.cal-split.no-image {
+    grid-template-columns: 1fr;
+}
+
+/* ---- left: image ---- */
+
+.cal-split-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cal-split-img {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    max-height: 240px;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 22px color-mix(in srgb, var(--err) 28%, transparent));
+    animation: cal-split-float 3.5s ease-in-out infinite;
+}
+
+@keyframes cal-split-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+
+/* ---- right: message ---- */
+
+.cal-split-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    text-align: left;
+}
+
+.cal-split-chip {
+    margin-bottom: 12px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--err);
+    background: color-mix(in srgb, var(--err) 14%, transparent);
+    border-radius: 999px;
+}
+
+.cal-split-title {
+    margin: 0 0 10px;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    color: var(--ac-text);
+}
+
+.cal-split-text {
+    max-width: 380px;
+    margin: 0 0 20px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ac-muted);
+}
+
+.cal-split-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.cal-split-retry,
+.cal-split-ghost {
+    padding: 11px 22px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 650;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.cal-split-retry {
+    color: #fff;
+    background: var(--ac-brand);
+    border: none;
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.30);
+}
+
+.cal-split-retry:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.cal-split-retry:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cal-split-ghost {
+    color: var(--ac-text);
+    background: transparent;
+    border: 1px solid var(--ac-control-border);
+}
+
+.cal-split-ghost:hover {
+    background: var(--ac-control-hover);
+}
+
+.cal-split-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 4px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ac-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.cal-split-link:hover {
+    color: var(--ac-purple);
+}
+
+.cal-split-link svg {
+    transition: transform 200ms ease;
+}
+
+.cal-split-link svg.open {
+    transform: rotate(180deg);
+}
+
+/* ---- IDE-style error details (same in both themes) ---- */
+
+.cal-split-details {
+    grid-column: 1 / -1;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+    margin-top: 16px;
+    padding: 16px 76px 16px 18px;
+
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
+        0 4px 14px rgba(0, 0, 0, 0.08);
+
+    animation: cal-split-in 180ms ease-out both;
+}
+
+.cal-split-details pre {
+    margin: 0;
+    font-family:
+        "JetBrains Mono",
+        "Fira Code",
+        Consolas,
+        "Courier New",
+        monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #e6edf3;
+}
+
+.cal-split-details button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 11px;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    color: #c4b5fd;
+    background: #25203a;
+    border: 1px solid #494064;
+    border-radius: 7px;
+
+    cursor: pointer;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
+}
+
+.cal-split-details button:hover {
+    color: #ffffff;
+    background: #3b2d5e;
+    border-color: #8b5cf6;
+}
+
+.cal-split-details button:focus-visible {
+    outline: 2px solid #a78bfa;
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    .cal-split-details {
+        padding: 42px 14px 14px;
+    }
+
+    .cal-split-details pre {
+        font-size: 11.5px;
+    }
+}
+/* ---- mobile ---- */
+
+@media (max-width: 700px) {
+    .cal-split {
+        grid-template-columns: 1fr;
+        row-gap: 14px;
+        min-height: 0;
+    }
+
+    .cal-split-img { max-width: 240px; max-height: 160px; }
+    .cal-split-title { font-size: 20px; }
+    .cal-split-body { align-items: center; text-align: center; }
+    .cal-split-actions { justify-content: center; }
+}

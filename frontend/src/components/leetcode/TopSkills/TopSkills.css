@@ -1,0 +1,642 @@
+/* =========================================================
+   TopSkills.css
+   Modern card styled to match the portfolio
+   (pink → purple gradient, soft surfaces, rounded corners)
+   Class names unchanged, so TopSkills.jsx needs no edits.
+   ========================================================= */
+
+/* 1. THEME TOKENS ----------------------------------------- */
+
+:root {
+    --ts-bg: #ffffff;
+    --ts-surface: #f7f7fd;
+    --ts-border: #e8eaf4;
+    --ts-text: #1c2033;
+    --ts-muted: #7a839b;
+
+    --ts-chip-bg: #f6f7fc;
+    --ts-chip-border: #e8eaf4;
+    --ts-chip-hover: #ffffff;
+
+    --ts-popup-bg: #ffffff;
+    --ts-popup-shadow: 0 20px 50px rgba(60, 50, 120, 0.18);
+    --ts-card-shadow: 0 8px 30px rgba(60, 50, 120, 0.07);
+    --ts-scrollbar: #d3d7e6;
+
+    --ts-skeleton-base: #eef0f8;
+    --ts-skeleton-shine: #f9faff;
+
+    --ts-pink: #d946ef;
+    --ts-purple: #8b5cf6;
+    --ts-brand: linear-gradient(135deg, #d946ef 0%, #8b5cf6 100%);
+
+    /* level colours: [main, text-on-tint] */
+    --ts-advanced: #f43f5e;
+    --ts-advanced-text: #e11d48;
+    --ts-intermediate: #f59e0b;
+    --ts-intermediate-text: #b45309;
+    --ts-fundamental: #10b981;
+    --ts-fundamental-text: #047857;
+}
+
+:root[data-theme="light-mode"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark-mode"] {
+    color-scheme: dark;
+
+    --ts-bg: #151823;
+    --ts-surface: #1b1f2e;
+    --ts-border: rgba(255, 255, 255, 0.08);
+    --ts-text: #f3f5fb;
+    --ts-muted: #98a1b8;
+
+    --ts-chip-bg: #1f2434;
+    --ts-chip-border: rgba(255, 255, 255, 0.08);
+    --ts-chip-hover: #252b3d;
+
+    --ts-popup-bg: #1d2232;
+    --ts-popup-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    --ts-card-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    --ts-scrollbar: #3d4558;
+
+    --ts-skeleton-base: #212637;
+    --ts-skeleton-shine: #2f364a;
+
+    --ts-advanced-text: #fda4af;
+    --ts-intermediate-text: #fcd34d;
+    --ts-fundamental-text: #6ee7b7;
+}
+
+
+/* 2. CARD -------------------------------------------------- */
+
+.ts,
+.ts-pop {
+    font-family: "Inter", "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ts-text);
+}
+
+.ts,
+.ts *,
+.ts *::before,
+.ts *::after,
+.ts-pop,
+.ts-pop *,
+.ts-pop *::before,
+.ts-pop *::after {
+    box-sizing: border-box;
+}
+
+.ts {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at 0% 0%, rgba(217, 70, 239, 0.08), transparent 45%),
+        radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.07), transparent 40%),
+        var(--ts-bg);
+    border: 1px solid var(--ts-border);
+    border-radius: 20px;
+    box-shadow: var(--ts-card-shadow);
+
+    transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease;
+}
+
+/* thin brand line along the top edge */
+.ts::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--ts-brand);
+    opacity: 0.9;
+}
+
+.ts button {
+    font: inherit;
+    cursor: pointer;
+}
+
+
+/* 3. HEADER ------------------------------------------------ */
+
+.ts__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+    padding: 22px 22px 18px;
+    border-bottom: 1px solid var(--ts-border);
+}
+
+.ts__icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    color: #fff;
+    background: var(--ts-brand);
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+}
+
+.ts__heading {
+    min-width: 0;
+}
+
+.ts__heading h3 {
+    margin: 0 0 3px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    color: var(--ts-text);
+}
+
+.ts__heading > span {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--ts-muted);
+}
+
+
+/* 4. SCROLL BODY ------------------------------------------- */
+
+.ts__body {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 4px 22px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ts-scrollbar) transparent;
+}
+
+.ts__body::-webkit-scrollbar,
+.ts-pop__chips::-webkit-scrollbar {
+    width: 5px;
+}
+
+.ts__body::-webkit-scrollbar-thumb,
+.ts-pop__chips::-webkit-scrollbar-thumb {
+    background: var(--ts-scrollbar);
+    border-radius: 999px;
+}
+
+
+/* 5. SKILL GROUPS ------------------------------------------ */
+
+.ts__group,
+.ts-pop {
+    --accent: var(--ts-purple);
+    --accent-text: var(--ts-purple);
+}
+
+.ts__group--advanced,
+.ts-pop--advanced {
+    --accent: var(--ts-advanced);
+    --accent-text: var(--ts-advanced-text);
+}
+
+.ts__group--intermediate,
+.ts-pop--intermediate {
+    --accent: var(--ts-intermediate);
+    --accent-text: var(--ts-intermediate-text);
+}
+
+.ts__group--fundamental,
+.ts-pop--fundamental {
+    --accent: var(--ts-fundamental);
+    --accent-text: var(--ts-fundamental-text);
+}
+
+.ts__group {
+    min-width: 0;
+    padding: 18px 0 20px;
+}
+
+.ts__group + .ts__group {
+    border-top: 1px dashed var(--ts-border);
+}
+
+.ts__group-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.ts__dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.ts__group-title {
+    font-size: 13px;
+    font-weight: 650;
+    letter-spacing: 0.1px;
+    color: var(--ts-text);
+}
+
+.ts__group-count {
+    margin-left: auto;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--accent-text);
+    background: color-mix(in srgb, var(--accent) 11%, transparent);
+    border-radius: 999px;
+}
+
+
+/* 6. CHIPS ------------------------------------------------- */
+
+.ts__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ts__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    max-width: 100%;
+    padding: 6px 6px 6px 11px;
+
+    background: var(--ts-chip-bg);
+    border: 1px solid var(--ts-chip-border);
+    border-radius: 999px;
+
+    transition: background-color 160ms ease, border-color 160ms ease,
+        transform 160ms ease, box-shadow 160ms ease;
+}
+
+.ts__chip-name {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ts-text);
+}
+
+.ts__chip-count {
+    flex-shrink: 0;
+    min-width: 24px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--accent-text);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-radius: 999px;
+}
+
+@media (hover: hover) {
+    .ts__chip:hover {
+        background: var(--ts-chip-hover);
+        border-color: color-mix(in srgb, var(--accent) 45%, var(--ts-chip-border));
+        box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 18%, transparent);
+        transform: translateY(-1px);
+    }
+}
+
+
+/* 7. "+N MORE" BUTTON --------------------------------------- */
+
+.ts .ts__more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    width: fit-content;
+    max-width: 100%;
+    margin: 12px auto 0;
+    padding: 6px 12px;
+
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 650;
+    line-height: 1.3;
+
+    color: var(--accent-text);
+    background: color-mix(
+        in srgb,
+        var(--accent) 10%,
+        transparent
+    );
+    border: 1px solid color-mix(
+        in srgb,
+        var(--accent) 28%,
+        transparent
+    );
+    border-radius: 999px;
+
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease;
+}
+
+.ts .ts__more-chevron {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    transition: transform 180ms ease;
+}
+
+.ts .ts__more.is-open .ts__more-chevron {
+    transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+    .ts .ts__more:hover,
+    .ts .ts__more.is-open {
+        background: color-mix(
+            in srgb,
+            var(--accent) 18%,
+            transparent
+        );
+        border-color: color-mix(
+            in srgb,
+            var(--accent) 45%,
+            transparent
+        );
+        transform: translateY(-1px);
+    }
+}
+
+
+
+/* 8. EMPTY STATE ------------------------------------------- */
+
+.ts__empty {
+    display: grid;
+    place-items: center;
+    min-height: 150px;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: center;
+    color: var(--ts-muted);
+}
+
+
+/* 9. LOADING SKELETON -------------------------------------- */
+
+.ts__skeleton-group {
+    padding: 18px 0;
+}
+
+.ts__skeleton-group + .ts__skeleton-group {
+    border-top: 1px dashed var(--ts-border);
+}
+
+.ts__skeleton-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.ts__skeleton-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ts-muted);
+}
+
+.ts__skeleton-title::before {
+    content: "";
+    width: 3px;
+    height: 14px;
+    border-radius: 3px;
+    background: var(--ts-brand);
+}
+
+.ts__skeleton-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ts__skeleton-count,
+.ts__skeleton-chip {
+    background: linear-gradient(
+        110deg,
+        var(--ts-skeleton-base) 25%,
+        var(--ts-skeleton-shine) 45%,
+        var(--ts-skeleton-base) 65%
+    );
+    background-size: 250% 100%;
+    animation: ts-shimmer 1.6s ease-in-out infinite;
+}
+
+.ts__skeleton-count {
+    width: 56px;
+    height: 20px;
+    border-radius: 999px;
+}
+
+.ts__skeleton-chip {
+    display: block;
+    flex: 0 0 var(--chip-width, 85px);
+    width: var(--chip-width, 85px);
+    height: 32px;
+    border-radius: 999px;
+}
+
+.ts__skeleton-chip:nth-child(2) { animation-delay: 100ms; }
+.ts__skeleton-chip:nth-child(3) { animation-delay: 200ms; }
+.ts__skeleton-chip:nth-child(4) { animation-delay: 300ms; }
+
+@keyframes ts-shimmer {
+    from { background-position: 100% 0; }
+    to   { background-position: -150% 0; }
+}
+
+
+/* 10. POPUP (portaled to document.body) -------------------- */
+
+.ts-pop {
+    position: fixed;
+    z-index: 1000;
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    overflow: visible;
+    isolation: isolate;
+
+    background: var(--ts-popup-bg);
+    border: 1px solid var(--ts-border);
+    border-radius: 16px;
+    box-shadow: var(--ts-popup-shadow);
+}
+
+.ts-pop.is-ready {
+    animation: ts-pop-in-bottom 180ms ease-out both;
+}
+
+.ts-pop.is-ready.is-top {
+    animation-name: ts-pop-in-top;
+}
+
+.ts-pop__arrow {
+    position: absolute;
+    z-index: -1;
+    left: var(--arrow);
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    background: var(--ts-popup-bg);
+    border: 1px solid var(--ts-border);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.ts-pop.is-bottom .ts-pop__arrow {
+    top: -7px;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.ts-pop.is-top .ts-pop__arrow {
+    bottom: -7px;
+    border-left: 0;
+    border-top: 0;
+}
+
+.ts-pop__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 17px;
+    border-bottom: 1px solid var(--ts-border);
+    border-radius: 16px 16px 0 0;
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--accent) 8%, transparent),
+        transparent
+    );
+}
+
+.ts-pop__dot {
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.ts-pop__header h4 {
+    margin: 0 0 2px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--ts-text);
+}
+
+.ts-pop__header p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ts-muted);
+}
+
+.ts-pop__chips {
+    position: relative;
+    align-content: flex-start;
+    max-height: 260px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 14px 17px 17px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ts-scrollbar) transparent;
+}
+
+.ts-pop .ts__chip-name  { font-size: 11.5px; }
+.ts-pop .ts__chip-count { font-size: 10.5px; }
+
+@keyframes ts-pop-in-bottom {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ts-pop-in-top {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+/* 11. RESPONSIVE ------------------------------------------- */
+
+@media (max-width: 900px) {
+    .ts__header { padding: 18px 18px 16px; }
+    .ts__body   { padding-inline: 18px; }
+}
+
+@media (max-width: 600px) {
+    .ts { border-radius: 16px; }
+
+    .ts__header { gap: 12px; padding: 16px; }
+    .ts__icon   { flex-basis: 40px; width: 40px; height: 40px; border-radius: 12px; }
+    .ts__heading h3 { font-size: 15px; }
+
+    .ts__body  { padding-inline: 15px; }
+    .ts__group { padding: 15px 0; }
+
+    .ts__chips,
+    .ts-pop__chips { gap: 7px; }
+
+    .ts-pop { width: min(340px, calc(100vw - 24px)); }
+    .ts-pop__chips { max-height: min(260px, 45vh); }
+}
+
+
+/* 12. ACCESSIBILITY ---------------------------------------- */
+
+.ts button:focus-visible {
+    outline: 2px solid var(--ts-purple);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ts *,
+    .ts-pop,
+    .ts-pop * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

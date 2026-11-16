@@ -1,0 +1,100 @@
+.hexes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hex-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.hex-row + .hex-row {
+    margin-top: -52px;
+}
+
+.hex {
+    position: relative;
+    width: 216px;
+    height: 250px;
+    animation: hex-float 6s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -1.3s);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.55), rgba(236, 72, 153, 0.55), rgba(147, 51, 234, 0.55));
+    transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.5, 1), background 0.3s;
+}
+.hex:hover {
+    transform: translateY(-8px) scale(1.05);
+    background: var(--more-grad);
+    z-index: 2;
+}
+@keyframes hex-float {
+    50% {
+        translate: 0 -9px;
+    }
+}
+
+.hex-inner {
+    position: absolute;
+    inset: 2px;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: linear-gradient(160deg, var(--more-card), var(--more-tint));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    padding: 0 36px;
+    transition: background 0.3s;
+}
+.hex:hover .hex-inner {
+    background: var(--more-tint);
+}
+
+.hex-icon {
+    font-size: 42px;
+    line-height: 1;
+}
+.hex-title {
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+/* description appears on hover */
+.hex-desc {
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--more-muted);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: 0.4s;
+}
+.hex:hover .hex-desc {
+    max-height: 70px;
+    opacity: 1;
+}
+
+@media (max-width: 760px) {
+    .hex {
+        width: 150px;
+        height: 173px;
+    }
+    .hex-inner {
+        padding: 0 22px;
+        gap: 6px;
+    }
+    .hex-icon {
+        font-size: 30px;
+    }
+    .hex-title {
+        font-size: 13px;
+    }
+    .hex-row {
+        flex-wrap: wrap;
+    }
+    .hex-row + .hex-row {
+        margin-top: 10px;
+    }
+}

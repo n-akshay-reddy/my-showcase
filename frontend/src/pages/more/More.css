@@ -1,0 +1,187 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@700&display=swap");
+
+/* Theme tokens for the whole More page. Every component under it reads these. */
+.more-page {
+    --more-card: #ffffff;
+    --more-ink: #17142a;
+    --more-muted: #6d6985;
+    --more-line: #e6e0f3;
+    --more-tint: #f5f1ff;
+    --more-dot: #e3dcf3;
+    --more-orange: #fb923c;
+    --more-pink: #ec4899;
+    --more-purple: #9333ea;
+    --more-grad: linear-gradient(95deg, #fb923c, #ec4899 50%, #9333ea);
+    --more-shadow: 0 2px 4px rgba(40, 20, 90, 0.04), 0 24px 54px rgba(40, 20, 90, 0.11);
+
+    position: relative;
+    isolation: isolate;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 22px 120px;
+    color: var(--more-ink);
+    font-family: Inter, system-ui, sans-serif;
+    line-height: 1.55;
+}
+
+:root[data-theme="dark-mode"] .more-page {
+    --more-card: #161227;
+    --more-ink: #f4f1ff;
+    --more-muted: #a39dbd;
+    --more-line: #2b2447;
+    --more-tint: #1d1833;
+    --more-dot: #2b2447;
+    --more-purple: #b784ff;
+    --more-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* soft colour blobs behind the content */
+.more-page::before,
+.more-page::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(110px);
+    pointer-events: none;
+}
+.more-page::before {
+    width: 460px;
+    height: 460px;
+    left: -160px;
+    top: 80px;
+    background: var(--more-orange);
+    opacity: 0.14;
+}
+.more-page::after {
+    width: 540px;
+    height: 540px;
+    right: -180px;
+    top: 50%;
+    background: var(--more-purple);
+    opacity: 0.17;
+}
+
+.more-page,
+.more-page *,
+.more-page *::before,
+.more-page *::after {
+    box-sizing: border-box;
+}
+
+.more-page button:focus-visible {
+    outline: 3px solid var(--more-pink);
+    outline-offset: 3px;
+}
+
+.more-hero h1 {
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+    font-weight: 800;
+    margin: 0 0 16px;
+    max-width: 820px;
+}
+
+.more-gradient {
+    background: var(--more-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.more-hero h1 .more-gradient {
+    background-size: 220% 100%;
+    animation: more-shimmer 7s ease-in-out infinite alternate;
+}
+@keyframes more-shimmer {
+    to {
+        background-position: 100% 0;
+    }
+}
+
+.more-sub {
+    color: var(--more-muted);
+    font-size: 17px;
+    max-width: 540px;
+    margin: 0;
+}
+
+.more-panel {
+    animation: more-in 0.55s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@keyframes more-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+}
+
+.more-panel-head {
+    margin-bottom: 38px;
+}
+.more-panel-head h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin: 0 0 8px;
+}
+
+/* "Next up" button under every panel */
+.more-next {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 64px 0 0 auto;
+    padding: 16px 26px;
+    border-radius: 999px;
+    border: 1px solid var(--more-line);
+    background: var(--more-card);
+    color: var(--more-muted);
+    font: 600 15px Inter, sans-serif;
+    cursor: pointer;
+    box-shadow: var(--more-shadow);
+    transition: box-shadow 0.25s;
+}
+.more-next strong {
+    color: var(--more-ink);
+}
+.more-next-arrow {
+    color: var(--more-pink);
+    transition: transform 0.3s;
+}
+.more-next:hover {
+    box-shadow: 0 18px 38px rgba(147, 51, 234, 0.22);
+}
+.more-next:hover .more-next-arrow {
+    transform: translateX(5px);
+}
+.more-next.final {
+    background: var(--more-grad);
+    color: #fff;
+    border: 0;
+    box-shadow: 0 18px 38px rgba(147, 51, 234, 0.32);
+}
+.more-next.final:hover {
+    box-shadow: 0 22px 46px rgba(147, 51, 234, 0.5);
+}
+.more-next.final strong,
+.more-next.final .more-next-arrow {
+    color: #fff;
+}
+
+@media (max-width: 760px) {
+    .more-next {
+        margin-left: 0;
+        font-size: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .more-page *,
+    .more-page *::before,
+    .more-page *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

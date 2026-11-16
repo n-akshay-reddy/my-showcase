@@ -8,7 +8,11 @@ export function executeFrontendTool(tool, deps) {
     }
 
     try {
-        return implementation.execute(tool.args ?? {}, deps);
+        const result = implementation.execute(tool.args ?? {}, deps);
+        if (!result || typeof result !== "object") {
+            return { ok: false, message: "That action didn't work. Please try again." };
+        }
+        return result;
     } catch (error) {
         return { ok: false, message: "That action didn't work. Please try again." };
     }

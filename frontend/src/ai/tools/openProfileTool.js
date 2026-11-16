@@ -1,4 +1,5 @@
 import { profile } from "../../data/profile";
+import { CHAT_CONFIG } from "../config/chatConfig";
 
 export const openProfileTool = {
     execute(args) {
@@ -7,12 +8,15 @@ export const openProfileTool = {
             return { ok: false, message: "I couldn't find that profile." };
         }
 
+        const seconds = Math.round(CHAT_CONFIG.terminalDelayMs / 1000);
+
         return {
             ok: true,
             changed: true,
-            message: `Opening ${item.name} in ${import.meta.env.VITE_PROFILE_REDIRECT_DELAY_MS / 1000} seconds. If nothing opens, use the link below.`,
+            message: `Opening ${item.name} in ${seconds} seconds. If nothing opens, use the link.`,
+            doneMessage: `Opened ${item.name}.`,
             link: { href: item.href, label: `Open ${item.name}` },
-            delayMs: import.meta.env.VITE_PROFILE_REDIRECT_DELAY_MS,
+            delayMs: CHAT_CONFIG.terminalDelayMs,
             after: () => window.open(item.href, "_blank", "noopener,noreferrer"),
         };
     },

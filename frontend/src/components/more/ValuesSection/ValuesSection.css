@@ -1,0 +1,334 @@
+.values {
+    position: relative;
+    max-width: 1000px;
+}
+
+.values-stage {
+    position: relative;
+    aspect-ratio: 1000 / 560;
+    border-radius: 34px;
+    overflow: hidden;
+    border: 1px solid var(--more-line);
+    box-shadow: var(--more-shadow);
+    --sky-top: #ffcfa3;
+    --sky-bottom: #f4b6d8;
+    --m1: #f472b6;
+    --m2: #7c3aed;
+    --m3: #d9ccf6;
+    --m4: #8b5cf6;
+}
+:root[data-theme="dark-mode"] .values-stage {
+    --m1: #c026d3;
+    --m2: #4c1d95;
+    --m3: #2b1a55;
+    --m4: #3b1d7a;
+}
+.values-stage svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* ---- scenery ---- */
+.values-clouds {
+    animation: values-drift 40s linear infinite alternate;
+}
+@keyframes values-drift {
+    to {
+        transform: translateX(70px);
+    }
+}
+.values-birds {
+    animation: values-glide 26s linear infinite alternate;
+}
+@keyframes values-glide {
+    to {
+        transform: translateX(380px);
+    }
+}
+.values-twinkle {
+    animation: values-twinkle 1.2s infinite ease-in-out;
+}
+@keyframes values-twinkle {
+    50% {
+        opacity: 0.2;
+    }
+}
+.values-aurora-wave {
+    animation: values-wave 9s ease-in-out infinite alternate;
+}
+@keyframes values-wave {
+    to {
+        transform: translateX(50px);
+    }
+}
+.values-drop {
+    stroke: #d6ddff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    animation: values-rain 0.7s linear infinite;
+}
+@keyframes values-rain {
+    to {
+        transform: translate(-90px, 640px);
+    }
+}
+.values-flash.on {
+    animation: values-flash 0.55s;
+}
+@keyframes values-flash {
+    0%,
+    100% {
+        opacity: 0;
+    }
+    12% {
+        opacity: 0.7;
+    }
+    24% {
+        opacity: 0.05;
+    }
+    38% {
+        opacity: 0.55;
+    }
+    60% {
+        opacity: 0;
+    }
+}
+.values-bolt.on {
+    animation: values-bolt 0.55s;
+}
+@keyframes values-bolt {
+    0%,
+    100% {
+        opacity: 0;
+    }
+    12%,
+    38% {
+        opacity: 1;
+    }
+    24% {
+        opacity: 0.2;
+    }
+    60% {
+        opacity: 0;
+    }
+}
+
+/* ---- flags ---- */
+.values-flag {
+    cursor: pointer;
+}
+.values-flag-hit {
+    pointer-events: all;
+}
+.values-flag-body {
+    transition: transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.values-flag.on .values-flag-body {
+    transform: scale(1.5);
+}
+.values-pennant {
+    animation: values-flap 1.1s ease-in-out infinite alternate;
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+}
+@keyframes values-flap {
+    to {
+        transform: skewY(-9deg) scaleX(0.9);
+    }
+}
+.values-pulse {
+    animation: values-pulse 2s infinite ease-in-out;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+@keyframes values-pulse {
+    50% {
+        transform: scale(1.6);
+        opacity: 0.12;
+    }
+}
+
+/* ---- hiker, teammates, confetti ---- */
+.values-bob {
+    animation: values-bob 0.5s ease-in-out infinite alternate;
+}
+.values-teammate {
+    animation: values-bob 0.6s ease-in-out infinite alternate;
+}
+@keyframes values-bob {
+    to {
+        transform: translateY(-3px);
+    }
+}
+.values-walking .values-leg-a {
+    animation: values-step 0.32s ease-in-out infinite alternate;
+}
+.values-walking .values-leg-b {
+    animation: values-step 0.32s ease-in-out infinite alternate-reverse;
+}
+@keyframes values-step {
+    from {
+        transform: rotate(-42deg);
+    }
+    to {
+        transform: rotate(42deg);
+    }
+}
+.values-confetti {
+    animation: values-confetti 1.7s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+@keyframes values-confetti {
+    from {
+        transform: translate(0, 0) rotate(0);
+        opacity: 1;
+    }
+    to {
+        transform: translate(var(--dx), var(--dy)) rotate(var(--r));
+        opacity: 0;
+    }
+}
+
+/* ---- labels on the trail ---- */
+.values-flag-label {
+    position: absolute;
+    transform: translate(calc(-100% - 10px), calc(-100% - 14px));
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #2a2540;
+    font: 700 14px Inter, sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(40, 20, 90, 0.2);
+    transition: box-shadow 0.25s, background 0.3s;
+}
+.values-flag-label:hover {
+    box-shadow: 0 8px 18px rgba(40, 20, 90, 0.2), 0 0 0 3px rgba(236, 72, 153, 0.45);
+}
+.values-flag-label.on {
+    background: var(--more-grad);
+    color: #fff;
+}
+
+/* ---- info card ---- */
+.values-card {
+    position: absolute;
+    left: 28px;
+    top: 26px;
+    width: min(370px, 42%);
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    padding: 22px 26px 20px;
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2a2540;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 22px 46px rgba(40, 20, 90, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    animation: values-fade 0.45s both;
+}
+@keyframes values-fade {
+    from {
+        opacity: 0;
+    }
+}
+.values-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.values-card-top small {
+    font-weight: 700;
+    color: var(--more-pink);
+    font-size: 13px;
+}
+.values-card-top em {
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 700;
+    color: #8a84a3;
+}
+.values-card h3 {
+    margin: 2px 0 4px;
+    font-size: 27px;
+    letter-spacing: -0.04em;
+    line-height: 1.12;
+}
+/* "over ..." gets struck through once the card has appeared */
+.values-over {
+    align-self: flex-start;
+    margin-bottom: 8px;
+    color: #6d6985;
+    font-weight: 700;
+    font-size: 15px;
+    background: linear-gradient(#ef4444, #ef4444) 0 56% / 0 2px no-repeat;
+    animation: values-strike 0.6s 0.35s forwards;
+}
+@keyframes values-strike {
+    to {
+        background-size: 100% 2px;
+    }
+}
+.values-tagline {
+    display: block;
+    margin: 2px 0 6px;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    background: var(--more-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.values-card p {
+    margin: 0 0 12px;
+    color: #6d6985;
+    font-size: 14px;
+    line-height: 1.55;
+}
+.values-steps {
+    display: flex;
+    margin: auto -3px 0;
+}
+.values-steps button {
+    flex: 1;
+    height: 22px;
+    border: 0;
+    padding: 0 3px;
+    background: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.values-steps button::before {
+    content: "";
+    flex: 1;
+    height: 6px;
+    border-radius: 6px;
+    background: #e6e0f3;
+    transition: background 0.3s;
+}
+.values-steps button.on::before {
+    background: var(--more-grad);
+}
+
+@media (max-width: 760px) {
+    .values-card {
+        position: static;
+        width: auto;
+        margin-top: 14px;
+        min-height: 0;
+    }
+    .values-flag-label {
+        display: none;
+    }
+    .values-steps button::before {
+        height: 10px;
+    }
+}

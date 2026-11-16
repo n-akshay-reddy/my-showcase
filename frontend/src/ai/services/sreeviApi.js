@@ -1,25 +1,46 @@
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
-export async function sendSreeviMessage(message) {
+async function requestSreevi(endpoint, payload, signal) {
     if (!API_BASE_URL) {
         throw new Error("The backend API URL is not configured.");
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/ai`, {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message })
+        body: JSON.stringify(payload),
+        signal,
     });
 
-    const result = await response.json();
-    if (!response.ok || !result.success) {
+    let result;
+
+    try {
+        result = await response.json();
+    } catch {
+        if (signal?.aborted) {
+            throw new DOMException("The request was aborted.", "AbortError");
+        }
+        throw new Error("Sreevi returned an invalid response.");
+    }
+
+    if (!response.ok || !result?.success) {
         throw new Error(
-            result.message || "Unable to get a response from Sreevi."
+            result?.error?.message ||
+            result?.message ||
+            "Sreevi could not process the request."
         );
     }
 
     return result.data;
+}
+
+export function sendSreeviMessage(message, signal) {
+    return requestSreevi("/api/ai",{ message },signal);
+}
+
+export function composeWithSreevi(payload, signal) {
+    return requestSreevi("/api/ai/compose",payload,signal);
 }

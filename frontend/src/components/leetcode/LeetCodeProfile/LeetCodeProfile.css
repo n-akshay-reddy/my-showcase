@@ -1,0 +1,448 @@
+/* =========================================================
+   LeetCodeProfile.css
+   Theme-aware profile header, same brand as the other
+   LeetCode cards (pink → purple, Inter, soft glows).
+   Unique touches: rotating gradient avatar ring, glowing
+   halo, icon stat tiles, pill handle.
+   ========================================================= */
+
+/* 1. THEME TOKENS ----------------------------------------- */
+
+:root {
+    --lp-bg: #ffffff;               /* page colour: used for avatar gaps */
+    --lp-text: #1c2033;
+    --lp-muted: #7a839b;
+    --lp-surface: #f6f7fc;
+    --lp-surface-hover: #ffffff;
+    --lp-border: #e8eaf4;
+}
+
+:root[data-theme="light-mode"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark-mode"] {
+    color-scheme: dark;
+
+    --lp-bg: #0b0d14;
+    --lp-text: #f3f5fb;
+    --lp-muted: #98a1b8;
+    --lp-surface: #171b28;
+    --lp-surface-hover: #1e2335;
+    --lp-border: rgba(255, 255, 255, 0.09);
+}
+
+
+/* 2. ROOT + ACCENT ----------------------------------------- */
+
+.lcp {
+    --a1: #8b5cf6;
+    --a2: #d946ef;
+    --glow: rgba(168, 85, 247, 0.40);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    height: 100%;
+    padding: 6px 4px;
+    box-sizing: border-box;
+
+    color: var(--lp-text);
+    font-family: "Inter", "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* someone else's profile: cool sky → indigo accent */
+.lcp.other {
+    --a1: #0ea5e9;
+    --a2: #6366f1;
+    --glow: rgba(56, 189, 248, 0.38);
+}
+
+.lcp button,
+.lcp a {
+    font-family: inherit;
+}
+
+
+/* 3. AVATAR ------------------------------------------------ */
+
+.lcp-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.lcp-halo {
+    position: absolute;
+    inset: -28px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 68%);
+    filter: blur(10px);
+    pointer-events: none;
+    animation: lcp-breathe 5s ease-in-out infinite;
+}
+
+@keyframes lcp-breathe {
+    50% { transform: scale(1.08); opacity: 0.75; }
+}
+
+/* the ring is a slowly rotating conic gradient behind the photo */
+.lcp-ring {
+    position: relative;
+    padding: 4px;
+    border-radius: 50%;
+    isolation: isolate;
+}
+
+.lcp-ring::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--a1), var(--a2), #f97316, var(--a2), var(--a1));
+    box-shadow: 0 14px 36px var(--glow);
+    animation: lcp-spin 8s linear infinite;
+}
+
+.lcp.syncing .lcp-ring::before {
+    animation-duration: 1.6s;
+}
+
+.lcp-avatar {
+    display: block;
+    width: 116px;
+    height: 116px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--lp-bg);
+}
+
+.lcp-fallback {
+    display: grid;
+    place-items: center;
+    font-size: 42px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+}
+
+.lcp-online {
+    position: absolute;
+    right: 9px;
+    bottom: 9px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 3px solid var(--lp-bg);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+}
+
+.lcp.syncing .lcp-online {
+    background: #fbbf24;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+    animation: lcp-pulse 1s ease-in-out infinite;
+}
+
+@keyframes lcp-pulse {
+    50% { opacity: 0.35; }
+}
+
+@keyframes lcp-spin {
+    to { transform: rotate(360deg); }
+}
+
+
+/* 4. INFO: eyebrow, name, handle --------------------------- */
+
+.lcp-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+}
+
+.lcp-topline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.lcp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 13px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--lp-muted);
+    background: var(--lp-surface);
+    border: 1px solid var(--lp-border);
+    border-radius: 999px;
+}
+
+.lcp-eyebrow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--a2) 20%, transparent), 0 0 8px var(--a2);
+}
+
+.lcp-back-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 13px 5px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--a1);
+    background: color-mix(in srgb, var(--a1) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--a1) 35%, transparent);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.lcp-back-chip svg {
+    width: 13px;
+    height: 13px;
+    transition: transform 180ms ease;
+}
+
+.lcp-back-chip:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--a1) 20%, transparent);
+    border-color: var(--a1);
+}
+
+.lcp-back-chip:hover:not(:disabled) svg {
+    transform: translateX(-3px);
+}
+
+.lcp-back-chip:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.lcp-name {
+    max-width: 100%;
+    margin: 2px 0 0;
+    overflow: hidden;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--lp-text);
+    transition: opacity 200ms ease;
+}
+
+.lcp.syncing .lcp-name {
+    opacity: 0.5;
+}
+
+/* username pill: clearly visible in both themes; the open icon is
+   always a gradient dot so it never disappears on a light background */
+.lcp-handle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 4px 4px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--lp-text);
+    background: color-mix(in srgb, var(--a1) 8%, var(--lp-bg));
+    border: 1px solid color-mix(in srgb, var(--a1) 35%, var(--lp-border));
+    border-radius: 999px;
+    transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.lcp-open {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    border-radius: 50%;
+    box-shadow: 0 4px 12px var(--glow);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.lcp-open svg {
+    width: 13px;
+    height: 13px;
+}
+
+.lcp-handle:hover {
+    border-color: var(--a1);
+    background: color-mix(in srgb, var(--a1) 14%, var(--lp-bg));
+}
+
+.lcp-handle:hover .lcp-open {
+    transform: translate(1px, -1px) scale(1.06);
+    box-shadow: 0 6px 16px var(--glow);
+}
+
+
+/* 5. STATS (no boxes: icon + label/value, thin dividers) ---- */
+
+.lcp-stats {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 14px;
+    margin: 10px 0 4px;
+}
+
+.lcp-stat {
+    --tone: var(--a1);
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 24px;
+    border-left: 1px solid var(--lp-border);
+}
+
+.lcp-stat:first-child {
+    padding-left: 0;
+    border-left: none;
+}
+
+.lcp-stat:last-child {
+    padding-right: 0;
+}
+
+.lcp-stat--rank   { --tone: #f59e0b; }
+.lcp-stat--solved { --tone: #8b5cf6; }
+.lcp-stat--streak { --tone: #f97316; }
+.lcp-stat--best   { --tone: #ec4899; }
+
+.lcp-stat-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: var(--tone);
+}
+
+.lcp-stat-icon svg {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 3px 6px color-mix(in srgb, var(--tone) 40%, transparent));
+}
+
+.lcp-stat div > span {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--lp-muted);
+}
+
+.lcp-stat strong {
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--lp-text);
+}
+
+.lcp-stat small {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--lp-muted);
+}
+
+
+/* 6. ACTIONS ----------------------------------------------- */
+
+.lcp-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.lcp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 20px;
+    box-sizing: border-box;
+
+    font-size: 13px;
+    font-weight: 650;
+    white-space: nowrap;
+    color: #fff;
+
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 10px 24px var(--glow);
+    cursor: pointer;
+
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+.lcp-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.lcp-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px var(--glow);
+}
+
+.lcp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.lcp-btn svg.spinning {
+    animation: lcp-spin 0.8s linear infinite;
+}
+
+.lcp-btn:focus-visible,
+.lcp-back-chip:focus-visible,
+.lcp-handle:focus-visible {
+    outline: 2px solid var(--a1);
+    outline-offset: 3px;
+}
+
+.lcp-updated {
+    font-size: 12px;
+    color: var(--lp-muted);
+}
+
+
+/* 7. RESPONSIVE + MOTION ----------------------------------- */
+
+@media (max-width: 640px) {
+    .lcp {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .lcp-avatar { width: 96px; height: 96px; }
+    .lcp-name   { font-size: 26px; }
+    .lcp-stat   { padding: 0 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lcp *,
+    .lcp *::before {
+        animation: none !important;
+        transition: none !important;
+    }
+}

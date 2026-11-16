@@ -7,9 +7,8 @@ const initialState = [
         label: "About",
         paths: ["/about"],
         children: [
-            { id: "experience", to: "/about/Experience", label: "Experience" },
+            { id: "experience", to: "/about/experience", label: "Experience" },
             { id: "education", to: "/about/education", label: "Education" },
-            { id: "skills", to: "/about/skills", label: "Skills" },
         ],
     },
     {
@@ -18,17 +17,11 @@ const initialState = [
         children: [
             { id: "projects", to: "/showcase/projects", label: "Projects" },
             { id: "achievements", to: "/showcase/achievements", label: "Achievements" },
+            { id: "opensource", to: "/showcase/opensource", label: "Open Source" }
         ],
     },
     { id: "contact", label: "Contact", to: "/contact" },
-    {
-        label: "More",
-        paths: ["/more"],
-        children: [
-            { id: "interests", to: "/more/interests", label: "Interests" },
-            { id: "hobbies", to: "/more/hobbies", label: "Hobbies" },
-        ],
-    },
+    { id: "more",  label: "More",  to: "/more"},
 ];
 
 const navBarSlice = createSlice({

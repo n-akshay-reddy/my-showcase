@@ -5,6 +5,8 @@ import { ArrowUpRight,BriefcaseBusiness, Download, Code2 } from "lucide-react";
 import "./HomePage.css";
 
 import SreeviShowcase from "../../components/home/SreeviShowcase/SreeviShowcase"
+import SkillsShowcase from "../../components/home/SkillsShowcase/SkillsShowcase";
+
 
 const DEVELOPER_ROLES = [
   "Software Engineer",
@@ -14,14 +16,6 @@ const DEVELOPER_ROLES = [
   "AgentExchange Developer",
   "RAG Engineer",
 ];
-
-const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-  "nakshayreddy@gmail.com"
-)}&su=${encodeURIComponent(
-  "Hiring Inquiry - Akshay Reddy"
-)}&body=${encodeURIComponent(
-  "Hi Akshay,\n\nI came across your portfolio and would like to discuss a potential opportunity with you.\n\nBest regards,"
-)}`;
 
 function HomePage() {
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
@@ -83,16 +77,16 @@ function HomePage() {
             systems, and build reliable enterprise solutions that
             turn challenging ideas into meaningful real-world impact.
           </p>
-
+          <SkillsShowcase />
           <div className="homepage-left-panel__actions">
-             <Link to="/more/contact"
+             <Link to="/contact"
                 className="homepage-left-panel__button homepage-left-panel__button--primary">
                 <BriefcaseBusiness size={16} /> Hire Me
                 <ArrowUpRight className="homepage-left-panel__button-arrow" size={17}/>
             </Link>
 
             <a className="homepage-left-panel__button homepage-left-panel__button--secondary"
-              href="/resume.pdf" target="_blank" rel="noreferrer">
+              href="/AkshayKumarReddyNanobolu-Resume.pdf" download="/AkshayKumarReddyNanobolu-Resume.pdf">
               Download resume <Download size={16} />
             </a>
           </div>

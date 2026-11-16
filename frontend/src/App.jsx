@@ -4,8 +4,12 @@ import { Routes, Route } from "react-router-dom";
 import WavyCursor from "./app/components/WavyCursor/WavyCursor";
 import QuickNavBar from "./app/components/QuickNavBar/QuickNavBar";
 import NavBar from "./app/components/NavBar/NavBar";
-// import Leetcode from "./pages/leetcode/LeetCode";
+import Leetcode from "./pages/leetcode/LeetCode";
 import HomePage from "./pages/homePage/HomePage";
+import Contact from "./pages/contact/Contact"
+import Experience from "./pages/experience/Experience";
+import Education from "./pages/education/Education";
+import More from "./pages/more/More";
 import ComingSoon from "./pages/ComingSoon/ComingSoon";
 import SreeviLauncher from "./app/components/SreeviLauncher/SreeviLauncher";
 
@@ -22,7 +26,11 @@ function App() {
         <div className="page-content">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            {/* <Route path="/leetcode" element={<Leetcode />} /> */}
+            <Route path="/leetcode" element={<Leetcode />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about/experience" element={<Experience />} />
+            <Route path="/about/education" element={<Education />} />
+            <Route path="/more" element={<More />} />
             <Route path="*" element={<ComingSoon />} />
           </Routes>
           <QuickNavBar />
