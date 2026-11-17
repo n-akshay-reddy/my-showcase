@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeCompany, openCompany } from "../../state-management/Experience/experienceSlice";
 import CompanyCard from "../../components/experience/CompanyCard/CompanyCard";
-import WorkWindow from "../../components/experience/WorkWindow/Workwindow";
+import WorkWindow from "../../components/experience/WorkWindow/WorkWindow";
 import "./Experience.css";
 
 export default function Experience() {
