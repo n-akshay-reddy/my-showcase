@@ -7,6 +7,7 @@ import navBarReducer from "../NavBar/navBarSlice"
 import themeReducer from "../theme/themeSlice";
 import educationReducer from "../Education/educationSlice";
 import moreReducer from "../More/moreSlice";
+import openSourceReducer from "../OpenSource/openSourceSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,8 @@ export const store = configureStore({
     experience: experienceReducer,
     sreevi: SreeviReducer,
     navBar:navBarReducer,
-    more: moreReducer
+    more: moreReducer,
+    openSource: openSourceReducer,
   },
 });
 
