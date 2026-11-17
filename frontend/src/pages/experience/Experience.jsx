@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { closeCompany, openCompany } from "../../state-management/experience/experienceSlice";
+import { closeCompany, openCompany } from "../../state-management/Experience/experienceSlice";
 import CompanyCard from "../../components/experience/CompanyCard/CompanyCard";
 import WorkWindow from "../../components/experience/WorkWindow/Workwindow";
 import "./Experience.css";

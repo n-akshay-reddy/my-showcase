@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import leetcodeReducer from "../leetcode/leetcodeSlice";
-import experienceReducer from "../experience/experienceSlice";
+import experienceReducer from "../Experience/experienceSlice";
 import SreeviReducer from "../Sreevi/SreeviSlice";
 import navBarReducer from "../NavBar/navBarSlice"
-import themeReducer from "../theme/themeSlice";
+import themeReducer from "../Theme/themeSlice";
 import educationReducer from "../Education/educationSlice";
 import moreReducer from "../More/moreSlice";
 import openSourceReducer from "../OpenSource/openSourceSlice";
