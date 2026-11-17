@@ -1,5 +1,3 @@
-import {getExperience,getProjects,getSkills} from "../controllers/profile/profile.controller.js";
-
 export async function profileRoutes(request, env, ctx) {
     
     if (request.method !== "GET") {
