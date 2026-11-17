@@ -11,6 +11,7 @@ import Experience from "./pages/experience/Experience";
 import Education from "./pages/education/Education";
 import More from "./pages/more/More";
 import OpenSource from "./pages/openSource/OpenSource";
+import Achievements from "./pages/achievements/Achievements";
 import ComingSoon from "./pages/ComingSoon/ComingSoon";
 import SreeviLauncher from "./app/components/SreeviLauncher/SreeviLauncher";
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/about/education" element={<Education />} />
             <Route path="/more" element={<More />} />
             <Route path="/showcase/opensource" element={<OpenSource />} />
+            <Route path="/showcase/achievements" element={<Achievements />} />
             <Route path="*" element={<ComingSoon />} />
           </Routes>
           <QuickNavBar />

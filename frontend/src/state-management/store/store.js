@@ -8,6 +8,7 @@ import themeReducer from "../theme/themeSlice";
 import educationReducer from "../Education/educationSlice";
 import moreReducer from "../More/moreSlice";
 import openSourceReducer from "../OpenSource/openSourceSlice";
+import achievementsReducer from "../Achievements/achievementsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     navBar:navBarReducer,
     more: moreReducer,
     openSource: openSourceReducer,
+    achievements: achievementsReducer,
   },
 });
 
