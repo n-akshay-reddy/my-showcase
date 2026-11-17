@@ -9,6 +9,7 @@ import educationReducer from "../Education/educationSlice";
 import moreReducer from "../More/moreSlice";
 import openSourceReducer from "../OpenSource/openSourceSlice";
 import achievementsReducer from "../Achievements/achievementsSlice";
+import projectsReducer from "../Projects/ProjectsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     more: moreReducer,
     openSource: openSourceReducer,
     achievements: achievementsReducer,
+    projects: projectsReducer,
   },
 });
 

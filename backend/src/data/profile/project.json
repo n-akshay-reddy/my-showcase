@@ -1,0 +1,317 @@
+{
+    "projects": [
+        {
+            "id": "sreevi",
+            "name": "Sreevi",
+            "tag": "AI Agent",
+            "tagline": "The portfolio that works for you.",
+            "description": "I built Sreevi as the AI agent of this portfolio. It works in an agent loop: it picks a tool, runs it, checks the result and carries on until the request is done, while the front-end shows every step live. Visitors just ask in plain words.",
+            "status": "In progress",
+            "stack": [
+                "React",
+                "Redux Toolkit",
+                "Cloudflare Workers",
+                "LLM tool calling",
+                "JSON schema"
+            ],
+            "metrics": [
+                {
+                    "value": "Agent loop",
+                    "label": "decide, act, repeat"
+                },
+                {
+                    "value": "Live",
+                    "label": "step trace"
+                },
+                {
+                    "value": "5+",
+                    "label": "agent tools"
+                }
+            ],
+            "features": [
+                "Works in an agent loop: decide, act, check the result, repeat until done",
+                "Streams every step live to the front-end as it works",
+                "Navigates pages and opens my profiles or resume",
+                "Switches or toggles the theme",
+                "Drafts and sends mails and messages on my behalf",
+                "Looks up LeetCode stats from just a username"
+            ],
+            "challenges": [
+                {
+                    "challenge": "Keeping an agent loop reliable on a free-tier model with tight token limits.",
+                    "approach": "I made the model return structured JSON decisions, kept one tool per step, and sent only recent turns in full with older ones as short summaries.",
+                    "outcome": "The loop stays within the limits and still triggers the right UI action."
+                },
+                {
+                    "challenge": "Showing what the agent is doing while the loop is still running.",
+                    "approach": "Every turn of the loop is stored in Redux as a step, so the front-end renders the trace as it happens.",
+                    "outcome": "Visitors watch each step live instead of waiting for a final answer."
+                },
+                {
+                    "challenge": "Multi-task requests where only some of the actions are possible.",
+                    "approach": "I wrote clear rules: run everything together when possible, offer only what is possible and wait for a yes otherwise, and run nothing when the request is unclear.",
+                    "outcome": "Several requests work in one message, and a failure stops the loop at the first error."
+                }
+            ],
+            "colors": {
+                "accent": [
+                    "#fb923c",
+                    "#ec4899"
+                ],
+                "cover": [
+                    "#2a0a4a",
+                    "#8b1d74"
+                ]
+            }
+        },
+        {
+            "id": "snap-map",
+            "name": "SnapMap",
+            "tag": "Full Stack · MERN",
+            "tagline": "Drop a pin. Ask Loki why it matters.",
+            "description": "I built a MERN app where users view and share locations over REST APIs with JWT login. Loki, an LLM assistant I added, gives smart insights about any place.",
+            "status": "Completed",
+            "stack": [
+                "MongoDB",
+                "Express.js",
+                "React",
+                "Node.js",
+                "Mongoose",
+                "JWT",
+                "LLM",
+                "Material UI"
+            ],
+            "metrics": [
+                {
+                    "value": "MERN",
+                    "label": "full stack"
+                },
+                {
+                    "value": "JWT",
+                    "label": "secure auth"
+                },
+                {
+                    "value": "Loki",
+                    "label": "LLM insights"
+                }
+            ],
+            "features": [
+                "view and share locations",
+                "JWT-based secure login",
+                "Loki, an LLM assistant for place insights",
+                "REST APIs backed by MongoDB"
+            ],
+            "challenges": [
+                {
+                    "challenge": "Letting people save and share locations safely while keeping every place informative.",
+                    "approach": "I built REST APIs on the MERN stack with JWT authentication, and added Loki, an LLM assistant that adds insight to a place.",
+                    "outcome": "A location-sharing app where every place comes with useful context."
+                }
+            ],
+            "liveUrl": "https://snap-map.netlify.app/",
+            "githubUrl": "https://github.com/n-akshay-reddy/SnapMap-frontend",
+            "colors": {
+                "accent": [
+                    "#34d399",
+                    "#06b6d4"
+                ],
+                "cover": [
+                    "#06353a",
+                    "#115e59"
+                ]
+            }
+        },
+        {
+            "id": "order-up",
+            "name": "Order Up",
+            "tag": "Frontend · React",
+            "tagline": "Hungry? It knows where you are.",
+            "description": "I built a config-driven React app that shows live restaurant data from the Swiggy API. It uses our live location for nearby places, and a debounced search keeps it smooth.",
+            "status": "Completed",
+            "stack": [
+                "React.js",
+                "Swiggy API",
+                "Geolocation",
+                "JavaScript"
+            ],
+            "metrics": [
+                {
+                    "value": "Swiggy",
+                    "label": "live API"
+                },
+                {
+                    "value": "Debounced",
+                    "label": "search"
+                },
+                {
+                    "value": "Config",
+                    "label": "driven UI"
+                }
+            ],
+            "features": [
+                "Config-driven UI that adapts to the data it gets",
+                "Nearby restaurants from the live location",
+                "Debounced search that cuts down API calls",
+                "Performance-optimized rendering"
+            ],
+            "challenges": [
+                {
+                    "challenge": "Showing restaurant data of many shapes from a live API without hard-coding layouts.",
+                    "approach": "I built a config-driven UI that renders from the data it receives, with live location for nearby results.",
+                    "outcome": "A fast restaurant browser that adapts to the data."
+                },
+                {
+                    "challenge": "Search that felt instant without flooding the API.",
+                    "approach": "I debounced the search bar so a request goes out only after the user pauses typing.",
+                    "outcome": "Fewer API calls and a smoother app."
+                }
+            ],
+            "note": "Needs CORS enabled in the browser to load live restaurant data.",
+            "liveUrl": "https://order-up-app.netlify.app/",
+            "githubUrl": "https://github.com/n-akshay-reddy/OrderUp",
+            "colors": {
+                "accent": [
+                    "#fbbf24",
+                    "#ef4444"
+                ],
+                "cover": [
+                    "#7c2d12",
+                    "#be123c"
+                ]
+            }
+        },
+        {
+            "id": "leetcode-data-hub",
+            "name": "LeetCode Data Hub",
+            "tag": "Backend · REST API",
+            "tagline": "One API. Every angle of your LeetCode grind.",
+            "description": "I'm building an Express.js REST API that serves LeetCode data to anyone who wants to fetch and use it. The real fight is not the endpoints, it is the architecture: filters reusable across every route, a middleware stack where order is everything, and JSON shaped around how people actually query it.",
+            "status": "In progress",
+            "stack": [
+                "Node.js",
+                "Express.js",
+                "TypeScript",
+                "REST APIs",
+                "Helmet",
+                "Compression",
+                "Rate limiting",
+                "CORS"
+            ],
+            "metrics": [
+                {
+                    "value": "REST",
+                    "label": "open endpoints"
+                },
+                {
+                    "value": "Filters",
+                    "label": "reusable, composable"
+                },
+                {
+                    "value": "2-file",
+                    "label": "app / server split"
+                }
+            ],
+            "features": [
+                "REST endpoints that return LeetCode data as clean, predictable JSON",
+                "Reusable filters that plug into any endpoint instead of being rewritten per route",
+                "Ordered middleware pipeline: security headers, compression, CORS, body limits, rate limiting",
+                "Global error handler in its own module, so every failure returns one consistent response"
+            ],
+            "challenges": [
+                {
+                    "challenge": "Defending a public API that anyone on the internet can hit, with no login to hide behind.",
+                    "approach": "I built it in layers. express.json with a 10 KB cap rejects oversized bodies with a 413 before they can eat memory. A rate limiter stands in front of the routes to absorb floods. Helmet adds security headers to the response so browsers treat the content safely. For CORS I learned the hard part: the server can answer successfully and the browser still blocks the result, because the browser enforces CORS from the response headers, so I set them on the response on purpose.",
+                    "outcome": "Oversized and flooding traffic dies at the door, browsers get explicit instructions, and honest users never notice any of it."
+                },
+                {
+                    "challenge": "Shipping a long list of filters without the codebase rotting into copy-pasted if-else blocks.",
+                    "approach": "I am designing the JSON data and the code as one system. Each filter is a small, single-purpose reusable function, and an endpoint composes the filters it needs from the query parameters instead of owning its own logic. The data is shaped up front so the same filters work across different resources.",
+                    "outcome": "A new filter or a new endpoint is a matter of plugging in pieces that already exist, so the API grows without the code growing messy."
+                }
+            ],
+            "colors": {
+                "accent": [
+                    "#22d3ee",
+                    "#a78bfa"
+                ],
+                "cover": [
+                    "#0b1d3a",
+                    "#312e81"
+                ]
+            }
+        }
+    ],
+    "moreProjects": [
+        {
+            "id": "dnotes",
+            "name": "DNOTES",
+            "tag": "Web3",
+            "description": "A decentralized note-taking app on the Internet Computer blockchain. Notes persist across renders, with add, edit and delete, real-time validation and a popup editor.",
+            "stack": [
+                "JavaScript",
+                "Internet Computer",
+                "Blockchain",
+                "Material UI"
+            ],
+            "githubUrl": "https://github.com/n-akshay-reddy/DNOTES-Web3-Note"
+        },
+        {
+            "id": "nakr-token",
+            "name": "NAKR Token",
+            "tag": "Web3",
+            "description": "A token application on the Internet Computer with secure transfers, balance queries and initial token claims, and data that persists across upgrades.",
+            "stack": [
+                "JavaScript",
+                "Internet Computer",
+                "Blockchain"
+            ],
+            "githubUrl": "https://github.com/n-akshay-reddy/NAKR-Token"
+        },
+        {
+            "id": "akshay-mindmap",
+            "name": "Akshay MindMap",
+            "tag": "Frontend · React",
+            "description": "A notes app in React to add, edit and delete notes, with real-time validation, missing-field highlights and a popup editor.",
+            "stack": [
+                "React",
+                "JavaScript",
+                "Material UI"
+            ],
+            "liveUrl": "https://akshay-mind-map.netlify.app/",
+            "githubUrl": "https://github.com/n-akshay-reddy/Akshay-MindMap"
+        },
+        {
+            "id": "drum-kit",
+            "name": "Drum Kit",
+            "tag": "Interactive Web",
+            "description": "An interactive drum kit that plays beats from the keyboard or mouse, with sound and visual feedback.",
+            "stack": [
+                "JavaScript",
+                "HTML",
+                "CSS"
+            ],
+            "liveUrl": "https://drum-kit-app-akshay.netlify.app/",
+            "githubUrl": "https://github.com/n-akshay-reddy/Drum-Kit"
+        },
+        {
+            "id": "snake-xenzia",
+            "name": "Snake Xenzia",
+            "tag": "Java Game",
+            "description": "The classic Snake game in Java: the snake grows as it eats, and the difficulty rises with the score.",
+            "stack": [
+                "Java"
+            ],
+            "githubUrl": "https://github.com/n-akshay-reddy/Snake-Xenzia-Game"
+        },
+        {
+            "id": "ping-pong",
+            "name": "Ping Pong",
+            "tag": "Java Game",
+            "description": "A two-player table tennis game in Java with paddle controls, ball physics and score tracking.",
+            "stack": [
+                "Java"
+            ],
+            "githubUrl": "https://github.com/n-akshay-reddy/Pong-Game"
+        }
+    ]
+}
