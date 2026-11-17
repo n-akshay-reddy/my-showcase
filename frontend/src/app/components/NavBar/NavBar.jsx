@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ChevronDown, Menu, SlidersHorizontal, SunMoon, X } from "lucide-react";
 import NavLogo from "../NavLogo/NavLogo";
-import { toggleTheme } from "../../../state-management/theme/themeSlice";
+import { toggleTheme } from "../../../state-management/Theme/themeSlice";
 import "./NavBar.css";
 
 const MOBILE_BREAKPOINT = 1000;

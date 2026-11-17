@@ -1,5 +1,5 @@
 import { store } from "../../state-management/store/store";
-import { setTheme, toggleTheme } from "../../state-management/theme/themeSlice";
+import { setTheme, toggleTheme } from "../../state-management/Theme/themeSlice";
 
 const ALLOWED = ["dark-mode", "light-mode", "toggle"];
 
