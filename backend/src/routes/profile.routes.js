@@ -1,3 +1,5 @@
+import {getProfile,getExperience,getSkills,getProjects} from "../controllers/profile/profile.controller";
+
 export async function profileRoutes(request, env, ctx) {
     
     if (request.method !== "GET") {
@@ -20,6 +22,9 @@ export async function profileRoutes(request, env, ctx) {
     const path = new URL(request.url).pathname;
 
     switch (path) {
+        case "/api/profile":
+            return getProfile(request, env, ctx);
+
         case "/api/profile/experience":
             return getExperience(request, env, ctx);
 
