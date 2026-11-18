@@ -185,3 +185,28 @@
         transition: none !important;
     }
 }
+
+
+.more-hero *::-webkit-scrollbar {
+    height: 12px;
+}
+.more-hero *::-webkit-scrollbar-button {
+    display: none;                      
+}
+.more-hero *::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 0 30px;                     
+}
+.more-hero *::-webkit-scrollbar-thumb {
+    background: var(--more-grad);
+    background-clip: padding-box;
+    border: 3px solid transparent;      
+    border-radius: 99px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    .more-hero * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--more-pink) transparent;
+    }
+}   
