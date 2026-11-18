@@ -132,26 +132,7 @@
     drop-shadow(0 12px 18px rgba(109, 40, 217, 0.5)) brightness(1.06);
 }
 
-/* ---------- hover lighting: spotlight cone + floor glow ---------- */
-.sreevi__spot {
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  width: 190px;
-  height: 300px;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    to bottom,
-    rgba(196, 181, 253, 0.6) 0%,
-    rgba(139, 92, 246, 0.22) 55%,
-    rgba(139, 92, 246, 0) 100%
-  );
-  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
-  filter: blur(1.5px);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
+/* ---------- hover glow on the floor ---------- */
 
 .sreevi__floor {
   position: absolute;
@@ -175,10 +156,6 @@
   transition: border-color 0.4s ease;
 }
 
-.sreevi__btn:hover .sreevi__spot,
-.sreevi__btn:focus-visible .sreevi__spot {
-  opacity: 1;
-}
 .sreevi__btn:hover .sreevi__floor,
 .sreevi__btn:focus-visible .sreevi__floor {
   transform: translateX(-50%) scale(1.25);
@@ -284,9 +261,8 @@
   .sreevi {
     --sreevi-size: 72px;
     --sreevi-right: 14px;
-    --sreevi-bottom: 14px;
+    --sreevi-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); /* clears the bottom social dock */
   }
-  .sreevi__spot { width: 150px; height: 220px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

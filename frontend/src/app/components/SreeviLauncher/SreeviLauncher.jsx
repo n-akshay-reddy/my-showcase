@@ -138,8 +138,7 @@ function SreeviLauncher() {
           onPointerLeave={resetTilt}
           onBlur={resetTilt}
         >
-          {/* hover lighting */}
-          <span className="sreevi__spot" aria-hidden="true" />
+          {/* hover glow on the floor */}
           <span className="sreevi__floor" aria-hidden="true" />
 
           {/* working ring */}
