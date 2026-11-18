@@ -26,6 +26,12 @@
     --g3: #b784ff;
 }
 
+.edu *,
+.edu *::before,
+.edu *::after {
+    box-sizing: border-box;
+}
+
 .edu::before {
     content: "";
     position: fixed;

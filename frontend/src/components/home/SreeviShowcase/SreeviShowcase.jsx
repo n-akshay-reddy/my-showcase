@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { profile } from "../../../data/profile";
-
-const getProfileLink = (name) => profile.find((item) => item.name === name)?.href;
 import {
-    ArrowUpRight,
     BookOpenText,
     Briefcase,
     Check,
@@ -11,7 +7,6 @@ import {
     Compass,
     FileText,
     Gauge,
-    GitBranch,
     Layers,
     LayoutDashboard,
     Mail,
@@ -28,13 +23,6 @@ import "./SreeviShowcase.css";
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
 /* ------------------------------------------------------------------ */
-
-// TODO: replace with your real links
-const LINKS = {
-    github: "https://github.com/your-username",
-    linkedin: "https://www.linkedin.com/in/your-handle",
-    leetcode: "https://leetcode.com/u/your-handle",
-};
 
 const TICKER_MS = 2400; // keep in sync with `sreevi-cap` duration in the CSS
 const DRAG_MARGIN = 24; // how far past the stage edge a card may be dragged
@@ -132,7 +120,13 @@ const CARDS = [
         note: "Plus a multi-agent AI portfolio",
     },
     {
-        id: "fullstack", slot: "top-right", icon: Code2, tint: "violet",
+        id: "products", slot: "top-right", icon: Package, tint: "blue",
+        title: "PRODUCT ENGINEERING",
+        headline: "DocuMake, Contacto & DocuVault",
+        note: "Complete applications for AgentExchange",
+    },
+    {
+        id: "fullstack", slot: "left", icon: Code2, tint: "violet",
         title: "SOFTWARE ENGINEERING",
         headline: "Complex systems, end to end",
         note: "Custom Word engine, Drive-like sharing & document pipelines",
@@ -153,30 +147,6 @@ const CARDS = [
         headline: "1100+ problems solved",
         note: "LeetCode",
     },
-    {
-        id: "products", slot: "left", icon: Package, tint: "blue",
-        title: "PRODUCT ENGINEERING",
-        headline: "DocuMake, Contacto & DocuVault",
-        note: "Complete applications for AgentExchange",
-    },
-    {
-        id: "oss", slot: "right", icon: GitBranch, tint: "orange",
-        title: "OPEN SOURCE",
-        headline: "Apex XLSX utility",
-        note: "Designed a developer-friendly spreadsheet parsing API",
-    },
-];
-
-const PILLS = [
-    { slot: "github", label: "GitHub", color: "var(--sv-text)", href: getProfileLink("GitHub") },
-    { slot: "linkedin", label: "LinkedIn", color: "#0a66c2", href: getProfileLink("LinkedIn") },
-    { slot: "leetcode", label: "LeetCode", color: "#f28a16", href: getProfileLink("LeetCode") },
-];
-
-const DOTS = [
-    { slot: "top", color: "#ffc933", size: 16 },
-    { slot: "left", color: "#34c77b", size: 12 },
-    { slot: "right", color: "#4a90ff", size: 14 },
 ];
 
 const STATUS_LABEL = {
@@ -241,12 +211,11 @@ function Orb({ size = 56, halo = false }) {
 }
 
 /**
- * Floating wrapper. The outer element runs the drift animation; when
- * `draggable` is set, an inner element carries the drag offset so the two
- * transforms never conflict. Changing `resetKey` slides the item back to
- * its slot.
+ * Draggable floating card. The outer element runs the drift animation and an
+ * inner element carries the drag offset, so the two transforms never conflict.
+ * Changing `resetKey` slides the card back to its slot.
  */
-function Float({ className, draggable = false, resetKey = 0, children }) {
+function Float({ className, resetKey = 0, children }) {
     const drag = useRef(null);
     const isFirstRender = useRef(true);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -307,20 +276,16 @@ function Float({ className, draggable = false, resetKey = 0, children }) {
 
     return (
         <div className={`sreevi-float ${className}${stateClasses}`}>
-            {draggable ? (
-                <div
-                    className="sreevi-drag"
-                    style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0)` }}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={endDrag}
-                    onPointerCancel={endDrag}
-                >
-                    {children}
-                </div>
-            ) : (
-                children
-            )}
+            <div
+                className="sreevi-drag"
+                style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0)` }}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={endDrag}
+                onPointerCancel={endDrag}
+            >
+                {children}
+            </div>
         </div>
     );
 }
@@ -412,7 +377,6 @@ function SreeviShowcase() {
                     <Float
                         key={card.id}
                         className={`sreevi-float--card sreevi-float--card-${card.slot}`}
-                        draggable
                         resetKey={resetKey}
                     >
                         <div
@@ -448,27 +412,6 @@ function SreeviShowcase() {
                     </Float>
                 );
             })}
-
-            {/* Link pills */}
-            {PILLS.map((pill) => (
-                <Float key={pill.slot} className={`sreevi-float--pill-${pill.slot}`}>
-                    <a className="sreevi-pill" href={pill.href} target="_blank" rel="noreferrer">
-                        <i style={{ background: pill.color }} />
-                        {pill.label}
-                        <ArrowUpRight size={13} aria-hidden="true" />
-                    </a>
-                </Float>
-            ))}
-
-            {/* Decorative dots */}
-            {DOTS.map((dot) => (
-                <Float key={dot.slot} className={`sreevi-float--dot-${dot.slot}`}>
-                    <span
-                        className="sreevi-dot"
-                        style={{ width: dot.size, height: dot.size, background: dot.color }}
-                    />
-                </Float>
-            ))}
 
             {/* Chat window */}
             <div className="sreevi-chat">

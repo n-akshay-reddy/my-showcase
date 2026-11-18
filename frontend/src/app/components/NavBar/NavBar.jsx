@@ -6,7 +6,7 @@ import NavLogo from "../NavLogo/NavLogo";
 import { toggleTheme } from "../../../state-management/Theme/themeSlice";
 import "./NavBar.css";
 
-const MOBILE_BREAKPOINT = 1000;
+const MOBILE_BREAKPOINT = 1100;
 const DROPDOWN_CLOSE_DELAY = 200;
 
 const NavBar = ({ onIntroDone }) => {

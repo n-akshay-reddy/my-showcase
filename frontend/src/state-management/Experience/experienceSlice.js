@@ -9,7 +9,7 @@ const initialState = {
             "mono": "BW",
             "role": "Software Development Engineer | AgentExchange Product Developer",
             "start": "2025-07-01",
-            "end": null,
+            "end": "2026-11-00",
             "summary": "Building and enhancing Salesforce AppExchange products, including DocuMake, Contacto, and DocuVault, with a focus on full-stack development, document processing engines, large-scale Excel pipelines, and AI-powered features.",
             "tags": [
                 "Salesforce",
@@ -188,111 +188,6 @@ const initialState = {
                 }
             ]
         },
-        {
-            "id": "sample-company",
-            "company": "Sample Company",
-            "mono": "SC",
-            "role": "Software Engineer",
-            "start": "2023-06-01",
-            "end": "2025-06-30",
-            "summary": "DUMMY ENTRY: replace with one or two lines about my role and what the team built.",
-            "tags": [
-                "Java",
-                "Spring",
-                "SQL"
-            ],
-            "highlights": [
-                {
-                    "id": "sample-feature-one",
-                    "type": "feature",
-                    "area": "Product",
-                    "title": "Sample feature one",
-                    "note": "Short one-line note",
-                    "challenge": "Describe the need here.",
-                    "approach": "Describe how I built it here.",
-                    "outcome": "Describe the outcome here.",
-                    "tech": [
-                        "Java",
-                        "Spring"
-                    ],
-                    "rank": 1
-                },
-                {
-                    "id": "sample-fix-one",
-                    "type": "fix",
-                    "area": "Reliability",
-                    "title": "Sample fix one",
-                    "note": "Short one-line note",
-                    "challenge": "Describe what was broken here.",
-                    "approach": "Describe how I fixed it here.",
-                    "outcome": "Describe the result here.",
-                    "tech": [
-                        "Debugging",
-                        "SQL"
-                    ],
-                    "rank": 2
-                },
-                {
-                    "id": "sample-feature-two",
-                    "type": "feature",
-                    "area": "Product",
-                    "title": "Sample feature two",
-                    "note": "Short one-line note",
-                    "challenge": "Describe the need here.",
-                    "approach": "Describe how I built it here.",
-                    "outcome": "Describe the outcome here.",
-                    "tech": [
-                        "SQL",
-                        "API"
-                    ],
-                    "rank": 3
-                },
-                {
-                    "id": "sample-fix-two",
-                    "type": "fix",
-                    "area": "Reliability",
-                    "title": "Sample fix two",
-                    "note": "Short one-line note",
-                    "challenge": "Describe what was broken here.",
-                    "approach": "Describe how I fixed it here.",
-                    "outcome": "Describe the result here.",
-                    "tech": [
-                        "Java",
-                        "Testing"
-                    ],
-                    "rank": 4
-                },
-                {
-                    "id": "sample-feature-three",
-                    "type": "feature",
-                    "area": "Product",
-                    "title": "Sample feature three",
-                    "note": "Short one-line note",
-                    "challenge": "Describe the need here.",
-                    "approach": "Describe how I built it here.",
-                    "outcome": "Describe the outcome here.",
-                    "tech": [
-                        "React",
-                        "API"
-                    ],
-                    "rank": 5
-                },
-                {
-                    "id": "sample-fix-three-rank-6-hidden-on-landin",
-                    "type": "fix",
-                    "area": "Reliability",
-                    "title": "Sample fix three (rank 6, hidden on landing)",
-                    "note": "Short one-line note",
-                    "challenge": "Describe what was broken here.",
-                    "approach": "Describe how I fixed it here.",
-                    "outcome": "Describe the result here.",
-                    "tech": [
-                        "Testing"
-                    ],
-                    "rank": 6
-                }
-            ]
-        }
     ],
     error: null,
     openCompanyId: null,
