@@ -87,7 +87,7 @@ const NavBar = ({ onIntroDone }) => {
     useEffect(() => () => clearTimeout(closeTimer.current), []);
 
     return (
-        <header className={collapsed ? "nb nb--collapsed" : "nb"}>
+        <header className={`nb${collapsed ? " nb--collapsed" : ""}${mobileOpen ? " nb--open" : ""}`}>
             <div className="nb__row">
                 <NavLogo onDone={onIntroDone} />
                 <nav className="nb__glass">
@@ -143,7 +143,7 @@ const NavBar = ({ onIntroDone }) => {
                 </nav>
 
                 <div className="nb__actions">
-                    <button type="button" className="nb__icon">
+                    <button type="button" className="nb__icon" data-tip="More to come" aria-label="Settings, more to come">
                         <SlidersHorizontal size={18} />
                     </button>
                     <button type="button" className="nb__icon" onClick={() => dispatch(toggleTheme())}>

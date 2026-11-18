@@ -20,7 +20,7 @@
 .exp-page *, .exp-page *::before, .exp-page *::after { box-sizing: border-box; }
 .exp-page button { font-family: inherit; }
 .exp-page :focus-visible { outline: 2px solid var(--g3); outline-offset: 3px; }
-.exp-main { max-width: 1000px; margin: 0 auto; padding: 0 20px 90px; }
+.exp-main { max-width: 1000px; margin: 0 auto; padding: 0 20px 170px; }
 
 /* hero */
 .exp-hero { padding: 76px 0 40px; }
@@ -38,22 +38,37 @@
 .exp-timeline { --r: 36px; --dot: 18px; position: relative; padding-left: var(--r); }
 
 /* track + progress fill (the fill grows as you scroll) */
+/* track + progress fill: runs only from the first node to the last node */
 .exp-timeline::before,
-.exp-timeline::after { content: ""; position: absolute; left: calc(var(--dot) / 2 - 2px); top: 0; width: 4px; border-radius: 4px; }
+.exp-timeline::after {
+  content: ""; position: absolute;
+  left: calc(var(--dot) / 2 - 2px);
+  top: var(--ls, 0px);
+  width: 4px; border-radius: 4px;
+}
 .exp-timeline::before {
-  bottom: 0;
+  height: var(--lh, 0px);
   background: color-mix(in srgb, var(--ink) 12%, transparent);
-  -webkit-mask: linear-gradient(#000 calc(100% - 40px), transparent);
-  mask: linear-gradient(#000 calc(100% - 40px), transparent);
 }
 .exp-timeline::after {
-  height: calc(var(--p, 0) * 100%);
-  /* bright comet tip on top of the gradient */
+  height: calc(var(--p, 0) * var(--lh, 0px));
   background:
     linear-gradient(to top, rgba(255, 255, 255, .9), transparent 36px) bottom / 100% 36px no-repeat,
     linear-gradient(var(--g1), var(--g2) 50%, var(--g3));
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--g2) 70%, transparent));
   transition: height .15s linear;
+}
+/* once the line is full, drop the white comet tip so it ends cleanly on the node */
+.exp-timeline.is-complete::after {
+  background: linear-gradient(var(--g1), var(--g2) 50%, var(--g3));
+}
+
+/* last node: gentle pulse once the timeline is complete */
+.exp-timeline.is-complete .exp-item:last-child .exp-dot {
+  box-shadow: 0 0 0 6px var(--bg), 0 0 28px color-mix(in srgb, var(--g3) 70%, transparent);
+}
+.exp-timeline.is-complete .exp-item:last-child .exp-dot::before {
+  animation: exp-ripple 2s ease-out infinite;
 }
 
 .exp-item { position: relative; }

@@ -14,15 +14,40 @@ export default function Experience() {
         const el = timelineRef.current;
         if (!el) return;
         let raf = 0;
+        const clamp = (v) => Math.min(1, Math.max(0, v));
 
         const update = () => {
             raf = 0;
-            const mid = window.innerHeight * 0.5;
-            const rect = el.getBoundingClientRect();
-            el.style.setProperty("--p", Math.min(1, Math.max(0, (mid - rect.top) / rect.height)));
+            const dots = el.querySelectorAll(".exp-dot");
+            if (!dots.length) return;
+
+            const vh = window.innerHeight;
+            const mid = vh * 0.5;
+
+            // Near the page bottom, move the reach point from the middle toward the bottom
+            // of the screen so the last node can always be reached.
+            const remaining = document.documentElement.scrollHeight - (window.scrollY + vh);
+            const k = clamp(1 - remaining / (vh * 0.5));
+            const trigger = mid + (vh * 0.95 - mid) * k;
+
+            // The line runs from the first dot's center to the last dot's center.
+            const tr = el.getBoundingClientRect();
+            const f = dots[0].getBoundingClientRect();
+            const l = dots[dots.length - 1].getBoundingClientRect();
+            const startY = f.top + f.height / 2 - tr.top;
+            const endY = l.top + l.height / 2 - tr.top;
+            const len = Math.max(0, endY - startY);
+
+            el.style.setProperty("--ls", `${startY}px`);
+            el.style.setProperty("--lh", `${len}px`);
+
+            const p = len ? clamp((trigger - (tr.top + startY)) / len) : 0;
+            el.style.setProperty("--p", p);
+            el.classList.toggle("is-complete", p >= 0.999);
+
             el.querySelectorAll(".exp-item").forEach((item) => {
                 const r = item.getBoundingClientRect();
-                item.classList.toggle("is-reached", r.top + r.height / 2 <= mid);
+                item.classList.toggle("is-reached", r.top + r.height / 2 <= trigger);
             });
         };
         const onScroll = () => {
@@ -32,10 +57,15 @@ export default function Experience() {
         update();
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll);
+        // Cards change height (fonts load, hover details), so re-measure when that happens.
+        const ro = new ResizeObserver(onScroll);
+        ro.observe(el);
+
         return () => {
             cancelAnimationFrame(raf);
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onScroll);
+            ro.disconnect();
         };
     }, [companies]);
 
