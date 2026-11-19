@@ -295,6 +295,7 @@ function SreeviChat() {
             });
             console.log(store.getState().sreevi);
         } catch (error) {
+            console.error("Sreevi request failed:", error);
             if (stale()) return;
             dispatch(turnFailed({ turnId, message: friendlyError(error) }));
         } finally {
