@@ -22,15 +22,6 @@ import {
 } from "../../../state-management/Sreevi/SreeviSlice";
 import "./SreeviChat.css";
 
-const SUGGESTIONS = [
-    "Show my LeetCode stats",
-    "Navigate to a section",
-    "Change theme",
-    "Update UI layout",
-    "Fetch and show data",
-    "Answer questions",
-];
-
 function useViewport() {
     const [vp, setVp] = useState({ w: window.innerWidth, h: window.innerHeight });
     useEffect(() => {
@@ -293,7 +284,6 @@ function SreeviChat() {
                 getState: store.getState,
                 navigate,
             });
-            console.log(store.getState().sreevi);
         } catch (error) {
             console.error("Sreevi request failed:", error);
             if (stale()) return;
@@ -364,16 +354,6 @@ function SreeviChat() {
                             <p>I'm Sreevi, your AI portfolio agent. What can I do for you?</p>
                         </div>
                     </div>
-
-                    {turns.length === 0 && (
-                        <div className="sv-chips">
-                            {SUGGESTIONS.map((s) => (
-                                <button key={s} type="button" onClick={() => send(s)}>
-                                    {s}
-                                </button>
-                            ))}
-                        </div>
-                    )}
 
                     {turns.map((turn) => (
                         <TurnView
