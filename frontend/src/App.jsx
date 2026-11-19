@@ -1,5 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 
 import WavyCursor from "./app/components/WavyCursor/WavyCursor";
 import QuickNavBar from "./app/components/QuickNavBar/QuickNavBar";
@@ -14,36 +16,42 @@ import OpenSource from "./pages/openSource/OpenSource";
 import Projects from "./pages/projects/Projects";
 import Achievements from "./pages/achievements/Achievements";
 import SreeviLauncher from "./app/components/SreeviLauncher/SreeviLauncher";
+import { fetchProfile } from "./state-management/profile/profileThunk";
 
 function App() {
-  const [introDone, setIntroDone] = useState(false);
-  const handleIntroDone = useCallback(() => setIntroDone(true), []);
+	const [introDone, setIntroDone] = useState(false);
+	const handleIntroDone = useCallback(() => setIntroDone(true), []);
 
-  return (
-    <>
-      <WavyCursor />
-      <NavBar onIntroDone={handleIntroDone} />
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(fetchProfile());
+	}, [dispatch]);
 
-      {introDone && (
-        <div className="page-content">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/leetcode" element={<Leetcode />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about/experience" element={<Experience />} />
-            <Route path="/about/education" element={<Education />} />
-            <Route path="/more" element={<More />} />
-            <Route path="/showcase/opensource" element={<OpenSource />} />
-            <Route path="/showcase/achievements" element={<Achievements />} />
-            <Route path="/showcase/projects" element={<Projects />} />
-            <Route path="*" element={<HomePage />} />
-          </Routes>
-          <QuickNavBar />
-        </div>
-      )}
-      {introDone && <SreeviLauncher />}
-    </>
-  );
+	return (
+		<>
+			<WavyCursor />
+			<NavBar onIntroDone={handleIntroDone} />
+
+			{introDone && (
+				<div className="page-content">
+					<Routes>
+						<Route path="/" element={<HomePage />} />
+						<Route path="/leetcode" element={<Leetcode />} />
+						<Route path="/contact" element={<Contact />} />
+						<Route path="/about/experience" element={<Experience />} />
+						<Route path="/about/education" element={<Education />} />
+						<Route path="/more" element={<More />} />
+						<Route path="/showcase/opensource" element={<OpenSource />} />
+						<Route path="/showcase/achievements" element={<Achievements />} />
+						<Route path="/showcase/projects" element={<Projects />} />
+						<Route path="*" element={<HomePage />} />
+					</Routes>
+					<QuickNavBar />
+				</div>
+			)}
+			{introDone && <SreeviLauncher />}
+		</>
+	);
 }
 
 export default App;

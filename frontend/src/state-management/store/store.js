@@ -10,6 +10,9 @@ import moreReducer from "../More/moreSlice";
 import openSourceReducer from "../OpenSource/openSourceSlice";
 import achievementsReducer from "../Achievements/achievementsSlice";
 import projectsReducer from "../Projects/ProjectsSlice";
+import profileReducer from "../profile/profileSlice";
+import skillsReducer from "../Skills/skillsSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +26,8 @@ export const store = configureStore({
     openSource: openSourceReducer,
     achievements: achievementsReducer,
     projects: projectsReducer,
+    profile: profileReducer,
+    skills: skillsReducer,
   },
 });
 

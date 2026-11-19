@@ -3,10 +3,12 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from "react";
+import { useSelector } from "react-redux";
 import { createPortal } from "react-dom";
 import {
   ArrowUpRight,
@@ -45,7 +47,6 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { SKILLS } from "./skillsData";
 import "./SkillsShowcase.css";
 
 /* ---------- category look & feel ---------- */
@@ -109,54 +110,50 @@ const ICON_RULES = [
   [/\btest|jest|junit|debug/i, Bug],
 ];
 
-const ICON_BY_SKILL = new Map(
-  SKILLS.map((skill) => [
-    skill.name,
-    ICON_RULES.find(([test]) => test.test(skill.name))?.[1] || metaOf(skill.type).Icon,
-  ])
-);
-const skillIcon = (skill) => ICON_BY_SKILL.get(skill.name) || Code2;
+const skillIcon = (skill) =>
+  ICON_RULES.find(([test]) => test.test(skill.name))?.[1] || metaOf(skill.type).Icon;
 
-/* ---------- derived data (static, computed once) ---------- */
+/* ---------- derived data (computed from the skills in the store) ---------- */
 
-const CATEGORIES = [...new Set(SKILLS.map((skill) => skill.type))];
+function buildSkillsView(skills) {
+  const categories = [...new Set(skills.map((skill) => skill.type))];
 
-const TABS = [
-  { key: "all", color: "#8b5cf6", Icon: Sparkles, label: "All", count: SKILLS.length },
-  ...CATEGORIES.map((type) => ({
-    key: type,
-    ...metaOf(type),
-    label: TAB_LABELS[type] || type,
-    count: SKILLS.filter((s) => s.type === type).length,
-  })),
-];
+  const tabs = [
+    { key: "all", color: "#8b5cf6", Icon: Sparkles, label: "All", count: skills.length },
+    ...categories.map((type) => ({
+      key: type,
+      ...metaOf(type),
+      label: TAB_LABELS[type] || type,
+      count: skills.filter((s) => s.type === type).length,
+    })),
+  ];
 
-// Top 5 by how widely each skill is used (ties fall back to your own `rank`).
-const TOP_SKILLS = [...SKILLS]
-  .sort((a, b) => b.usedIn.length - a.usedIn.length || a.rank - b.rank)
-  .slice(0, 5);
+  // Top 5 by how widely each skill is used (ties fall back to your own `rank`).
+  const topSkills = [...skills]
+    .sort((a, b) => b.usedIn.length - a.usedIn.length || a.rank - b.rank)
+    .slice(0, 5);
 
-// The most used skill sets the full bar width in the idle panel.
-const MAX_USED = TOP_SKILLS[0]?.usedIn.length || 1;
+  // The most used skill sets the full bar width in the idle panel.
+  const maxUsed = topSkills[0]?.usedIn.length || 1;
 
-// Round-robin across categories so neighbouring chips alternate colours.
-const MARQUEE_SKILLS = (() => {
-  const buckets = CATEGORIES.map((type) =>
-    SKILLS.filter((skill) => skill.type === type).sort((a, b) => a.rank - b.rank)
+  // Round-robin across categories so neighbouring chips alternate colours.
+  const buckets = categories.map((type) =>
+    skills.filter((skill) => skill.type === type).sort((a, b) => a.rank - b.rank)
   );
   const mixed = [];
-  const longest = Math.max(...buckets.map((bucket) => bucket.length));
+  const longest = Math.max(0, ...buckets.map((bucket) => bucket.length));
   for (let i = 0; i < longest; i++) {
     buckets.forEach((bucket) => bucket[i] && mixed.push(bucket[i]));
   }
-  return mixed;
-})();
 
-const HALF = Math.ceil(MARQUEE_SKILLS.length / 2);
-const ROWS = [
-  { skills: MARQUEE_SKILLS.slice(0, HALF), reverse: false },
-  { skills: MARQUEE_SKILLS.slice(HALF), reverse: true },
-];
+  const half = Math.ceil(mixed.length / 2);
+  const rows = [
+    { skills: mixed.slice(0, half), reverse: false },
+    { skills: mixed.slice(half), reverse: true },
+  ];
+
+  return { skills, categories, tabs, topSkills, maxUsed, rows };
+}
 
 /* ---------- hooks ---------- */
 
@@ -348,9 +345,10 @@ function SkillDetail({ skill, pinned, inline = false, onClose }) {
 
 /* ---------- idle panel: mini "hover -> detail" illustration + the five most used skills ---------- */
 
-function SkillOverview({ onSkill }) {
-  if (TOP_SKILLS.length === 0) return null;
-  const { color, to } = metaOf(TOP_SKILLS[0].type);
+function SkillOverview({ view, onSkill }) {
+  const { topSkills, maxUsed } = view;
+  if (topSkills.length === 0) return null;
+  const { color, to } = metaOf(topSkills[0].type);
 
   return (
     <div className="skills-showcase__overview">
@@ -387,9 +385,9 @@ function SkillOverview({ onSkill }) {
       <div className="skills-showcase__favs-head">Most used</div>
 
       <ol className="skills-showcase__favs">
-        {TOP_SKILLS.map((skill, i) => {
+        {topSkills.map((skill, i) => {
           const { color, to } = metaOf(skill.type);
-          const width = Math.max(18, (skill.usedIn.length / MAX_USED) * 100);
+          const width = Math.max(18, (skill.usedIn.length / maxUsed) * 100);
           return (
             <li key={skill.name}>
               <button
@@ -411,7 +409,8 @@ function SkillOverview({ onSkill }) {
 
 /* ---------- the dialog ---------- */
 
-function SkillsModal({ initialCategory, initialSkill, onClose }) {
+function SkillsModal({ view, initialCategory, initialSkill, onClose }) {
+  const { skills, categories, tabs } = view;
   const [active, setActive] = useState(initialCategory);
   const [query, setQuery] = useState("");
   const [peekName, setPeekName] = useState(null);
@@ -476,16 +475,16 @@ function SkillsModal({ initialCategory, initialSkill, onClose }) {
   };
 
   const q = query.trim().toLowerCase();
-  const groups = (active === "all" ? CATEGORIES : [active])
+  const groups = (active === "all" ? categories : [active])
     .map((type) => ({
       type,
-      items: SKILLS.filter((s) => s.type === type && (!q || s.name.toLowerCase().includes(q))),
+      items: skills.filter((s) => s.type === type && (!q || s.name.toLowerCase().includes(q))),
     }))
     .filter((group) => group.items.length > 0);
 
   // Pinned wins over hover.
   const shownName = pinnedName ?? peekName;
-  const shownSkill = SKILLS.find((s) => s.name === shownName) || null;
+  const shownSkill = skills.find((s) => s.name === shownName) || null;
 
   return createPortal(
     <div
@@ -504,7 +503,7 @@ function SkillsModal({ initialCategory, initialSkill, onClose }) {
               The stack behind <span>the work.</span>
             </h2>
             <p className="skills-showcase__modal-sub">
-              {SKILLS.length} skills across {CATEGORIES.length} areas
+              {skills.length} skills across {categories.length} areas
             </p>
           </div>
 
@@ -550,7 +549,7 @@ function SkillsModal({ initialCategory, initialSkill, onClose }) {
               if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY;
             }}
           >
-            {TABS.map(({ key, color, Icon, label, count }) => (
+            {tabs.map(({ key, color, Icon, label, count }) => (
               <button
                 key={key}
                 type="button"
@@ -638,7 +637,7 @@ function SkillsModal({ initialCategory, initialSkill, onClose }) {
                   onClose={unpin}
                 />
               ) : (
-                <SkillOverview onSkill={pickSkill} />
+                <SkillOverview view={view} onSkill={pickSkill} />
               )}
             </aside>
           )}
@@ -652,6 +651,9 @@ function SkillsModal({ initialCategory, initialSkill, onClose }) {
 /* ---------- main component ---------- */
 
 function SkillsShowcase() {
+  const skills = useSelector((state) => state.skills.data);
+  const view = useMemo(() => buildSkillsView(skills), [skills]);
+
   const [tip, setTip] = useState(null); // { skill, rect } (mouse hover only)
   const [modal, setModal] = useState(null); // { category, skill } | null
   const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
@@ -666,6 +668,9 @@ function SkillsShowcase() {
     return () => window.removeEventListener("scroll", hideTip);
   }, [hideTip]);
 
+  // Skills haven't arrived from the backend yet. Must stay below every hook.
+  if (skills.length === 0) return null;
+
   const openModal = (category, skill = null) => {
     hideTip();
     setModal({ category, skill });
@@ -679,13 +684,13 @@ function SkillsShowcase() {
           Skills I work with
         </h2>
         <button type="button" className="skills-showcase__view-all" onClick={() => openModal("all")}>
-          Explore all {SKILLS.length}
+          Explore all {skills.length}
           <ArrowUpRight size={15} strokeWidth={2.4} />
         </button>
       </div>
 
       <div className="skills-showcase__marquee" onMouseLeave={hideTip}>
-        {ROWS.map((row, rowIndex) => (
+        {view.rows.map((row, rowIndex) => (
           <div
             key={rowIndex}
             className={`skills-showcase__track ${
@@ -727,7 +732,7 @@ function SkillsShowcase() {
       </div>
 
       <ul className="skills-showcase__legend">
-        {CATEGORIES.map((type) => (
+        {view.categories.map((type) => (
           <li key={type}>
             <button
               type="button"
@@ -745,6 +750,7 @@ function SkillsShowcase() {
       {tip && canHover && <SkillTooltip skill={tip.skill} rect={tip.rect} />}
       {modal && (
         <SkillsModal
+          view={view}
           initialCategory={modal.category}
           initialSkill={modal.skill}
           onClose={closeModal}
