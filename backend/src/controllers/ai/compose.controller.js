@@ -1,4 +1,4 @@
-import { composeAgent } from "../../agent/messageComposer/compose.agent.js";
+import { composeAgent } from "../../agent/messageComposer/composeAgent.js";
 
 const CHANNELS = ["gmail", "message"];
 const TOPICS = ["job", "project", "collaboration", "hi", "general"];

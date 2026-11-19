@@ -13,6 +13,13 @@ const FRESH_DRAFT_MS = 5000;
 
 const fill = (text, name) => text.replaceAll("{name}", name.trim() || "[Your name]");
 
+/** Links that open a ready-made mail draft addressed to Akshay. */
+const gmailUrl = (subject, body) =>
+    `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+const mailtoUrl = (subject, body) =>
+    `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
 const buildPayload = ({ channel, topic, name, email, prompt, subject, body }) => ({
     channel,
     topic,
@@ -157,6 +164,10 @@ function SendCard() {
     const valid = EMAIL_RE.test(email.trim());
     const bad = (touched || valid) && email.trim() !== "" && !valid;
 
+    // For now "Send message" just opens the mail draft addressed to Akshay.
+    const canSend = valid && msg.trim() !== "" && !loading;
+    const subject = name.trim() ? `Message from ${name.trim()}` : "Hello from your portfolio";
+
     const write = () =>
         run(
             buildPayload({ channel: "message", topic: "general", name, email, prompt, subject: "", body: msg }),
@@ -204,10 +215,15 @@ function SendCard() {
             />
 
             <div className="ct-sendrow">
-                {/* Placeholder: wire this to your send endpoint. */}
-                <button type="button" className="ct-btn ct-btn--pri" disabled={!valid || !msg.trim() || loading} onClick={() => setMsg("")}>
+                <a
+                    className="ct-btn ct-btn--pri"
+                    href={gmailUrl(subject, msg)}
+                    target="_blank" rel="noopener noreferrer"
+                    aria-disabled={!canSend} tabIndex={canSend ? undefined : -1}
+                    onClick={(e) => !canSend && e.preventDefault()}
+                >
                     Send message<ArrowRight size={16} />
-                </button>
+                </a>
             </div>
         </section>
     );
@@ -413,10 +429,6 @@ function Modal({ initial, onClose }) {
         if (await copy(fullDraft)) onClose();
     };
 
-    const to = encodeURIComponent(CONTACT_EMAIL);
-    const su = encodeURIComponent(subject);
-    const bd = encodeURIComponent(body);
-
     return createPortal(
         <div className="ct-scope ct-ov" onMouseDown={(e) => e.target === e.currentTarget && requestClose()}>
             <div className="ct-md" role="dialog" aria-modal="true" aria-labelledby="ct-mt">
@@ -463,12 +475,12 @@ function Modal({ initial, onClose }) {
                         <a
                             className="ct-btn ct-btn--pri" onClick={onAction}
                             aria-disabled={loading} tabIndex={loading ? -1 : undefined}
-                            href={`https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${bd}`}
+                            href={gmailUrl(subject, body)}
                             target="_blank" rel="noopener noreferrer"
                         ><Send size={16} />Open in Gmail</a>
                         <a
                             className="ct-btn" onClick={onAction} aria-disabled={loading} tabIndex={loading ? -1 : undefined}
-                            href={`mailto:${CONTACT_EMAIL}?subject=${su}&body=${bd}`}>
+                            href={mailtoUrl(subject, body)}>
                             <Mail size={16} />Open in email app
                         </a>
                         <button type="button" className={`ct-btn${copied ? " is-done" : ""}`} disabled={loading} onClick={copyDraft}>

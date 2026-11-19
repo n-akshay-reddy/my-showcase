@@ -1,10 +1,9 @@
 import { generateResponse } from "../ai/aiService.js";
 import { buildSystemPrompt } from "../ai/prompts/systemPrompt.js";
 import { describeToolsForPrompt } from "./tools/index.js";
-import {parseDecision,validateDecision} from "./decisionSchema.js";
+import { parseDecision, validateDecision } from "./decisionSchema.js";
 
 export async function runAgent(message, env) {
-    
     const rawResponse = await generateResponse({
         prompt: message,
         systemInstruction: buildSystemPrompt(describeToolsForPrompt()),

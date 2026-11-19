@@ -1,5 +1,5 @@
 import { handleAIRequest } from "../controllers/ai/ai.controller.js";
-// import {handleComposeRequest} from "../controllers/ai/compose.controller.js"
+import {handleComposeRequest} from "../controllers/ai/compose.controller.js"
 
 export async function aiRoutes(request, env, ctx) {
     const url = new URL(request.url);
@@ -26,9 +26,9 @@ export async function aiRoutes(request, env, ctx) {
         return handleAIRequest(request, env, ctx);
     }
 
-    // if (path === "/api/ai/compose") {
-    //     return handleComposeRequest(request, env, ctx);
-    // }
+    if (path === "/api/ai/compose") {
+        return handleComposeRequest(request, env, ctx);
+    }
 
     return new Response(
         JSON.stringify({

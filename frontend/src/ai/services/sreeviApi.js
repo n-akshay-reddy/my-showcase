@@ -1,4 +1,3 @@
-
 const API_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 async function requestSreevi(endpoint, payload, signal) {
@@ -37,10 +36,10 @@ async function requestSreevi(endpoint, payload, signal) {
     return result.data;
 }
 
-export function sendSreeviMessage(message, signal) {
-    return requestSreevi("/api/ai",{ message },signal);
+export function sendSreeviMessage(message, context, signal) {
+    return requestSreevi("/api/ai", { message, context }, signal);
 }
 
 export function composeWithSreevi(payload, signal) {
-    return requestSreevi("/api/ai/compose",payload,signal);
+    return requestSreevi("/api/ai/compose", payload, signal);
 }

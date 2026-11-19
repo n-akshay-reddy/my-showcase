@@ -1,9 +1,14 @@
 import { TOOLS } from "./tools/index.js";
 
 export const DECISION_TYPES = ["answer", "clarify", "execute", "decline"];
-export const TOPICS = ["leetcode", "theme", "navigation", "portfolio", "general","contact"];
+export const TOPICS = ["leetcode", "theme", "navigation", "portfolio", "general", "contact"];
 
+// Keep these in step with frontend/src/ai/config/chatConfig.js
 const MAX_MESSAGE_LENGTH = 1000;
+const MAX_TOOLS = 4;
+const MAX_NOTE_LENGTH = 200;
+
+const clip = (text, max) => String(text ?? "").replace(/\s+/g, " ").trim().slice(0, max);
 
 export function parseDecision(text) {
     try {
@@ -52,13 +57,87 @@ function validateToolArgs(definition, args) {
     return errors;
 }
 
+// Every tool is checked against the registry. Topic, label, terminal and runsOn come
+// from the registry, never from the model.
+function cleanTools(rawTools, errors) {
+    if (!Array.isArray(rawTools)) {
+        errors.push("tools must be an array.");
+        return [];
+    }
+    if (rawTools.length > MAX_TOOLS) {
+        errors.push(`tools must not exceed ${MAX_TOOLS} items.`);
+        return [];
+    }
+
+    const cleaned = [];
+
+    rawTools.forEach((tool, i) => {
+        const definition = tool && typeof tool.name === "string" ? TOOLS[tool.name] : null;
+
+        if (!definition) {
+            errors.push(`tools[${i}].name is missing or is not an allowed tool.`);
+            return;
+        }
+
+        const args = tool.args ?? {};
+        const argErrors = validateToolArgs(definition, args);
+
+        if (argErrors.length > 0) {
+            errors.push(...argErrors);
+            return;
+        }
+
+        cleaned.push({
+            name: definition.name,
+            args,
+            topic: definition.topic,
+            label: typeof definition.label === "function" ? definition.label(args) : definition.label ?? definition.name,
+            terminal: Boolean(definition.terminal),
+            runsOn: definition.runsOn,
+        });
+    });
+
+    // One terminal tool at most (opens a page or tab), and it always runs last
+    const terminals = cleaned.filter((tool) => tool.terminal);
+    if (terminals.length > 1) {
+        errors.push("Only one terminal tool is allowed per request.");
+        return [];
+    }
+    return [...cleaned.filter((tool) => !tool.terminal), ...terminals];
+}
+
+// A clarify question carries the tools still waiting for missing details
+function cleanPending(rawPending, errors) {
+    if (rawPending == null) return [];
+    if (!Array.isArray(rawPending)) {
+        errors.push("pending must be an array.");
+        return [];
+    }
+
+    return rawPending.slice(0, MAX_TOOLS).flatMap((item) => {
+        const name = item && typeof item.tool === "string" ? item.tool : null;
+
+        if (!name || !TOOLS[name]) {
+            errors.push("pending[].tool must be an allowed tool.");
+            return [];
+        }
+
+        const args = item.args && typeof item.args === "object" && !Array.isArray(item.args) ? item.args : {};
+        const missing = Array.isArray(item.missing)
+            ? item.missing.filter((key) => typeof key === "string").slice(0, 5)
+            : [];
+
+        return [{ tool: name, args, missing }];
+    });
+}
+
 export function validateDecision(input) {
     if (!input || typeof input !== "object" || Array.isArray(input)) {
         return { valid: false, errors: ["Decision must be a JSON object."] };
     }
 
     const errors = [];
-    const { type, message, topic, intent, params, tool } = input;
+    const { type, message, ask, note, tools, pending } = input;
 
     if (!DECISION_TYPES.includes(type)) {
         errors.push(`type must be one of: ${DECISION_TYPES.join(", ")}.`);
@@ -70,33 +149,22 @@ export function validateDecision(input) {
         errors.push(`message must not exceed ${MAX_MESSAGE_LENGTH} characters.`);
     }
 
-    if (!TOPICS.includes(topic)) {
-        errors.push(`topic must be one of: ${TOPICS.join(", ")}.`);
-    }
+    if (ask != null && typeof ask !== "string") errors.push("ask must be a string or null.");
+    if (note != null && typeof note !== "string") errors.push("note must be a string or null.");
 
-    if (intent != null && typeof intent !== "string") {
-        errors.push("intent must be a string or null.");
-    }
-
-    if (params != null && (typeof params !== "object" || Array.isArray(params))) {
-        errors.push("params must be an object or null.");
-    }
-
-    let cleanTool = null;
+    let cleanList = [];
 
     if (type === "execute") {
-        const definition = tool && typeof tool.name === "string" ? TOOLS[tool.name] : null;
-
-        if (!definition) {
-            errors.push("tool.name is missing or is not an allowed tool.");
+        if (!Array.isArray(tools) || tools.length === 0) {
+            errors.push("execute needs at least one tool.");
         } else {
-            const args = tool.args ?? {};
-            errors.push(...validateToolArgs(definition, args));
-            cleanTool = { name: definition.name, args, runsOn: definition.runsOn };
+            cleanList = cleanTools(tools, errors);
         }
-    } else if (tool != null) {
-        errors.push("tool must be null unless type is execute.");
+    } else if (Array.isArray(tools) && tools.length > 0) {
+        errors.push("tools must be empty unless type is execute.");
     }
+
+    const cleanPendingList = type === "clarify" ? cleanPending(pending, errors) : [];
 
     if (errors.length > 0) {
         return { valid: false, errors };
@@ -107,10 +175,10 @@ export function validateDecision(input) {
         decision: {
             type,
             message: message.trim(),
-            topic,
-            intent: intent ?? null,
-            params: params ?? {},
-            tool: cleanTool
-        }
+            ask: clip(ask, MAX_NOTE_LENGTH),
+            note: clip(note, MAX_NOTE_LENGTH),
+            tools: cleanList,
+            pending: cleanPendingList,
+        },
     };
 }
