@@ -2,7 +2,8 @@
 	"name": "Akshay Kumar Reddy Nanobolu",
 	"knownAs": "Akshay",
 	"headline": "Software engineer building enterprise Salesforce products, full-stack apps and AI agents",
-	"summary": "I'm a product-oriented software engineer who works across enterprise Salesforce engineering, full-stack development and applied AI. I enjoy tracing hard problems to their root cause, optimizing resource-heavy systems and turning complex logic into reusable, maintainable code.",
+	"summary": "I'm a software developer who builds great products and doesn't let platform limits stop me. When a system hit hard constraints like memory caps, query limits and large-file failures, I redesigned the approach: I chunked data processing, rebuilt storage and file reconstruction to handle uploads over 20 MB, and re-engineered a slow data pipeline to cut processing time by 70% and code by 80%. I think in systems: clean architecture, reusable code and performance from day one. I've built end-to-end RAG pipelines, designed AI agents that control a whole interface through natural language, and solved 1,100+ LeetCode problems. Give me a hard constraint and I'll find a way to build something great within it.",
+	"simpleAbout": "I'm Akshay, a software developer from Hyderabad. I love hard problems: platform limits, slow systems and performance bottlenecks are where I do my best work. I optimize, I design systems that scale, and I build AI products like Sreevi, who is talking to you right now.",
 	"roles": [
 		"Salesforce product developer",
 		"Full-stack developer",
